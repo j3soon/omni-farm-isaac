@@ -1,0 +1,20 @@
+{
+  "job_type": "base",
+  "name": "isaac-sim-example",
+  "command": "./python.sh",
+  "args": ["-u"],
+  "job_spec_path": "null",
+  "capacity_requirements": {
+    "resource_limits": {
+      "nvidia.com/gpu": 1
+    }
+  },
+  "container": "nvcr.io/nvidia/isaac-sim:2023.1.1",
+  "allowed_args": {
+    "args": {
+      "arg": "",
+      "default": "./standalone_examples/api/omni.isaac.core/time_stepping.py",
+      "separator": ""
+    }
+  }
+}
