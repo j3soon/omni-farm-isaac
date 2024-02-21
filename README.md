@@ -128,6 +128,12 @@ This demo allows running arbitrary built-in Isaac Sim scripts on Omniverse Farm.
 
 To run custom Isaac Sim scripts, you may modify the job definition file to mount volumes into the container. Make sure to upload the custom scripts to the mounted volume before submitting tasks.
 
+## Running Isaac Sim Jobs Locally During Development
+
+For headless tasks, simply follow [the official guide](https://docs.omniverse.nvidia.com/isaacsim/latest/installation/install_container.html).
+
+If your task requires a GUI during development, see [this guide](https://github.com/j3soon/isaac-extended#docker-container-with-display).
+
 ## Developer Notes
 
 - The job definitions used above contains minimal configuration. You can include more configuration options by referring to the [Job Definition Docs](https://docs.omniverse.nvidia.com/farm/latest/guides/creating_job_definitions.html) and the [Farm Examples](https://docs.omniverse.nvidia.com/farm/latest/farm_examples.html).
