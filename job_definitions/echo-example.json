@@ -1,0 +1,14 @@
+{
+  "job_type": "base",
+  "name": "echo-example",
+  "command": "echo",
+  "job_spec_path": "null",
+  "container": "ubuntu:latest",
+  "allowed_args": {
+    "args": {
+      "arg": "",
+      "default": "hello",
+      "separator": ""
+    }
+  }
+}
