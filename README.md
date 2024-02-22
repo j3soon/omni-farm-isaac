@@ -1,5 +1,7 @@
 # Running Isaac Sim Workloads on Omniverse Farm
 
+[<img src="https://img.shields.io/badge/dockerhub-image-important.svg?logo=docker">](https://hub.docker.com/r/j3soon/omni-farm-isaac/tags)
+
 ## Installing Omniverse Farm
 
 > Skip this section if you already have Omniverse Farm installed.
@@ -127,6 +129,77 @@ scripts/remove_job.sh isaac-sim-example
 This demo allows running arbitrary built-in Isaac Sim scripts on Omniverse Farm.
 
 To run custom Isaac Sim scripts, you may modify the job definition file to mount volumes into the container. Make sure to upload the custom scripts to the mounted volume before submitting tasks.
+
+## Running Custom Isaac Sim Scripts
+
+> The commands below assume that the Nucleus server is running on `localhost`. If the Nucleus server is running on a different machine, replace `localhost` with the correct IP address or hostname. The commands also assume that the Nucleus server has username `admin` and password `admin`. If the Nucleus server has a different username and password, you may want to consider modifying `job_definitions/isaac-sim-output-example.json` to include the correct username and password. Specifically, by modifying the `capacity_requirements` entry:
+> ```json
+> ...
+> "capacity_requirements": {
+>   "resource_limits": {
+>     "nvidia.com/gpu": 1
+>   },
+>   "env": [
+>     {
+>       "name": "OMNI_USER",
+>       "valueFrom": {
+>         "secretKeyRef": {
+>           "key": "OMNI_USER",
+>           "name": "nucleus-secret"
+>         }
+>       }
+>     },
+>     {
+>       "name": "OMNI_PASS",
+>       "valueFrom": {
+>         "secretKeyRef": {
+>           "key": "OMNI_PASS",
+>           "name": "nucleus-secret"
+>         }
+>       }
+>     }
+>   ]
+> },
+> ...
+> ```
+> Alternatively, if security is not a concern, you may include the username and password directly through the `env` entry.
+
+Upload the custom Isaac Sim script to Omniverse Nucleus. For an example,
+upload `tasks/isaac-sim-simulation-example.py` to
+`omniverse://localhost/Projects/J3soon/Isaac/2023.1.1/Scripts/` through the GUI.
+
+Alternatively, use [`omnicli`](https://docs.omniverse.nvidia.com/connect/latest/connect-sample.html#omni-cli) to upload the script to Nucleus:
+
+```sh
+scripts/docker/build_docker.sh
+scripts/docker/run_docker.sh
+# in the container
+cd /omnicli
+./omnicli copy "/workspace/tasks/isaac-sim-simulation-example.py" "omniverse://localhost/Projects/J3soon/Isaac/2023.1.1/Scripts/isaac-sim-simulation-example.py"
+```
+
+Save the job definition file and verify it:
+
+```sh
+source secrets/env.sh
+scripts/save_job.sh isaac-sim-output-example
+scripts/load_job.sh
+```
+
+Then, submit the job:
+
+```sh
+scripts/submit_task.sh isaac-sim-output-example \
+"/run.sh --download-src 'omniverse://localhost/Projects/J3soon/Isaac/2023.1.1/Scripts/isaac-sim-simulation-example.py' --download-dest '/src/isaac-sim-simulation-example.py' --upload-src '/results/isaac-sim-simulation-example.txt' --upload-dest 'omniverse://localhost/Projects/J3soon/Isaac/2023.1.1/Results/isaac-sim-simulation-example.txt' './python.sh -u /src/isaac-sim-simulation-example.py 10'" "Isaac Sim Cube Fall"
+```
+
+You can remove the job definition file after the job is finished:
+
+```sh
+scripts/remove_job.sh isaac-sim-output-example
+```
+
+This demo allows running arbitrary Isaac Sim scripts on Omniverse Farm by downloading the necessary files, executing the specified command, and then uploading the output files to Nucleus.
 
 ## Running Isaac Sim Jobs Locally During Development
 

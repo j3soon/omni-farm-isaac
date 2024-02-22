@@ -1,0 +1,20 @@
+{
+  "job_type": "base",
+  "name": "isaac-sim-output-example",
+  "command": "bash",
+  "args": ["-c"],
+  "job_spec_path": "null",
+  "capacity_requirements": {
+    "resource_limits": {
+      "nvidia.com/gpu": 1
+    }
+  },
+  "container": "j3soon/omni-farm-isaac",
+  "allowed_args": {
+    "args": {
+      "arg": "",
+      "default": "echo hi",
+      "separator": ""
+    }
+  }
+}
