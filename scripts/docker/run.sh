@@ -1,10 +1,5 @@
 #!/bin/bash -e
 
-if [ ! -f "/.dockerenv" ]; then
-  echo "Error: Not running inside a Docker container."
-  exit 1
-fi
-
 show_help() {
   echo -e "\nUsage: $0 [OPTIONS] <command>\n"
   echo "Options:"
