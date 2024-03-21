@@ -1,13 +1,13 @@
 #!/bin/bash -e
 
 show_help() {
-  echo -e "\nUsage: $0 [OPTIONS] <command>\n"
+  echo -e "\nUsage: $0 [OPTIONS] <commands>\n"
   echo "Options:"
   echo "  --download-src    The source file or folder to download"
   echo "  --download-dest   The destination file or folder to download to"
   echo "  --upload-src      The source file or folder to upload"
   echo "  --upload-dest     The destination file or folder to upload to"
-  echo -e "\nThis script downloads the necessary files, executes the specified command, and then uploads the output files.\n"
+  echo -e "\nThis script downloads the necessary files, executes the specified commands, and then uploads the output files.\n"
 }
 
 resolve_path() {
@@ -55,8 +55,8 @@ done
 
 set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 
-if [ "$#" -ne 1 ]; then
-  echo "Error: Incorrect number of arguments. Expected 1, got $#."
+if [ "$#" -lt 1 ]; then
+  echo "Error: Incorrect number of arguments. Expected more than 1, got $#."
   show_help
   exit 1
 fi
@@ -66,8 +66,12 @@ if [ -n "$DOWNLOAD_SRC" ] || [ -n "$DOWNLOAD_DEST" ]; then
   ( cd /omnicli && ./omnicli copy "$DOWNLOAD_SRC" "$DOWNLOAD_DEST" )
 fi
 
-echo "Running command: '$1'"
-$1
+echo "Will run commands: '$@'"
+while [[ $# -gt 0 ]]; do
+  echo "Running command: '$1'"
+  $1
+  shift
+done
 
 if [ -n "$UPLOAD_SRC" ] || [ -n "$UPLOAD_DEST" ]; then
   echo "Copying files from '$UPLOAD_SRC' to '$UPLOAD_DEST'..."
