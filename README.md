@@ -205,22 +205,26 @@ scripts/remove_job.sh isaac-sim-output-example
 
 This demo allows running arbitrary Isaac Sim scripts on Omniverse Farm by downloading the necessary files, executing the specified command, and then uploading the output files to Nucleus.
 
+> This and the following examples assume that there is no external volume mounted to the container. You could skip the `--download-src` and `--upload-dest` options if you have a persistent volume mounted to the container.
+
 ## Running Omniverse Isaac Gym Scripts
 
 > Make sure to follow the **Running Custom Isaac Sim Scripts** section before moving on to this section.
 
-Upload the Omniverse Isaac Gym repo code to Omniverse Nucleus. For an example,
+Upload the Omniverse Isaac Gym repo code to Omniverse Nucleus. Specifically,
 download and upload [NVIDIA-Omniverse/OmniIsaacGymEnvs](https://github.com/NVIDIA-Omniverse/OmniIsaacGymEnvs) to
 `omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/2023.1.1/Scripts/` through the GUI.
 
-Alternatively, use [`omnicli`](https://docs.omniverse.nvidia.com/connect/latest/connect-sample.html#omni-cli) to upload the script to Nucleus:
+Alternatively, use [`omnicli`](https://docs.omniverse.nvidia.com/connect/latest/connect-sample.html#omni-cli) to upload the repo to Nucleus:
 
 ```sh
 apt-get update && apt-get install -y git
+# download omniverse isaac gym
 git clone https://github.com/NVIDIA-Omniverse/OmniIsaacGymEnvs.git
 cd OmniIsaacGymEnvs
 git reset --hard release/2023.1.1
 cd ..
+# upload
 cd thirdparty/omnicli
 ./omnicli copy "../../OmniIsaacGymEnvs" "omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/2023.1.1/Scripts/OmniIsaacGymEnvs"
 ```
@@ -253,7 +257,83 @@ You can remove the job definition file after the job has finished:
 scripts/remove_job.sh isaac-sim-output-example
 ```
 
-This demo allows running arbitrary Omniverse Isaac Gym scripts on Omniverse Farm by downloading the necessary files, executing the specified command, and then uploading the output checkpoint files to Nucleus.
+This demo allows running arbitrary Omniverse Isaac Gym scripts on Omniverse Farm by downloading the necessary files, executing the specified commands, and then uploading the output checkpoint files to Nucleus.
+
+## Running Omniverse Isaac Gym Scripts with SKRL
+
+> Make sure to follow the **Running Custom Isaac Sim Scripts** section before moving on to this section.
+
+Upload the Omniverse Isaac Gym repo code and SKRL repo code to Omniverse Nucleus. Specifically,
+download and upload [NVIDIA-Omniverse/OmniIsaacGymEnvs](https://github.com/NVIDIA-Omniverse/OmniIsaacGymEnvs) and [Toni-SM/skrl](https://github.com/Toni-SM/skrl) to
+`omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/2023.1.1/Scripts/oige-and-skrl/` through the GUI.
+
+Then, upload the SKRL training script to Omniverse Nucleus. For an example,
+upload `tasks/skrl-examples` to
+`omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/2023.1.1/Scripts/oige-and-skrl/` through the GUI.
+
+Alternatively, use [`omnicli`](https://docs.omniverse.nvidia.com/connect/latest/connect-sample.html#omni-cli) to upload the repos to Nucleus:
+
+```sh
+apt-get update && apt-get install -y git
+# download omniverse isaac gym
+git clone https://github.com/NVIDIA-Omniverse/OmniIsaacGymEnvs.git
+cd OmniIsaacGymEnvs
+git reset --hard release/2023.1.1
+cd ..
+# download skrl
+git clone https://github.com/Toni-SM/skrl.git
+cd skrl
+git reset --hard 1.1.0
+cd ..
+# upload
+cd thirdparty/omnicli
+./omnicli copy "../../OmniIsaacGymEnvs" "omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/2023.1.1/Scripts/oige-and-skrl/OmniIsaacGymEnvs"
+./omnicli copy "../../skrl" "omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/2023.1.1/Scripts/oige-and-skrl/skrl"
+./omnicli copy "../../tasks/skrl-examples" "omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/2023.1.1/Scripts/oige-and-skrl/skrl-examples"
+```
+
+Save the job definition file and verify it:
+
+```sh
+source secrets/env.sh
+scripts/save_job.sh isaac-sim-output-example
+scripts/load_job.sh
+```
+
+Then, submit the job:
+
+```sh
+scripts/submit_task.sh isaac-sim-output-example \
+"/run.sh \
+  --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/2023.1.1/Scripts/oige-and-skrl' \
+  --download-dest '/src' \
+  --upload-src '/isaac-sim/runs' \
+  --upload-dest 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/2023.1.1/Results/oige-and-skrl/runs' \
+  './python.sh -m pip install -e /src/OmniIsaacGymEnvs' \
+  './python.sh -m pip install --upgrade pip' \
+  './python.sh -m pip install -e /src/skrl["torch"]' \
+  'apt-get update' \
+  'apt-get install -y libglib2.0-0 libsm6 libxrender1 libxext6' \
+  './python.sh /src/skrl-examples/omniisaacgym/torch_ant_ppo_headless.py'" \
+  "Omniverse Isaac Gym and SKRL Torch Ant PPO"
+```
+
+> Note that the `pip install --upgrade pip` command is necessary to install the SKRL package.
+>
+> Note that the packages installed by `apt-get` is to prevent the following error:
+> ```
+> ImportError: libgthread-2.0.so.0: cannot open shared object file: No such file or directory
+> ```
+>
+> See [this post](https://stackoverflow.com/a/62786543) for further information.
+
+You can remove the job definition file after the job has finished:
+
+```sh
+scripts/remove_job.sh isaac-sim-output-example
+```
+
+This demo allows running arbitrary Omniverse Isaac Gym scripts on Omniverse Farm by downloading the necessary files, executing the specified commands, and then uploading the output checkpoint files to Nucleus.
 
 ## Running Isaac Sim Jobs Locally During Development
 
