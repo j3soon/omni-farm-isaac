@@ -246,8 +246,8 @@ scripts/submit_task.sh isaac-sim-output-example \
   --download-dest '/src/OmniIsaacGymEnvs' \
   --upload-src '/src/OmniIsaacGymEnvs/omniisaacgymenvs/runs' \
   --upload-dest 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/2023.1.1/Results/OmniIsaacGymEnvs/runs' \
-  './python.sh -m pip install -e /src/OmniIsaacGymEnvs' \
-  './python.sh /src/OmniIsaacGymEnvs/omniisaacgymenvs/scripts/rlgames_train.py task=Cartpole headless=True'" \
+  './python.sh -u -m pip install -e /src/OmniIsaacGymEnvs' \
+  './python.sh -u /src/OmniIsaacGymEnvs/omniisaacgymenvs/scripts/rlgames_train.py task=Cartpole headless=True'" \
   "Omniverse Isaac Gym Cartpole"
 ```
 
@@ -309,12 +309,12 @@ scripts/submit_task.sh isaac-sim-output-example \
   --download-dest '/src' \
   --upload-src '/isaac-sim/runs' \
   --upload-dest 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/2023.1.1/Results/oige-and-skrl/runs' \
-  './python.sh -m pip install -e /src/OmniIsaacGymEnvs' \
-  './python.sh -m pip install --upgrade pip' \
-  './python.sh -m pip install -e /src/skrl["torch"]' \
+  './python.sh -u -m pip install -e /src/OmniIsaacGymEnvs' \
+  './python.sh -u -m pip install --upgrade pip' \
+  './python.sh -u -m pip install -e /src/skrl["torch"]' \
   'apt-get update' \
   'apt-get install -y libglib2.0-0 libsm6 libxrender1 libxext6' \
-  './python.sh /src/skrl-examples/omniisaacgym/torch_ant_ppo_headless.py'" \
+  './python.sh -u /src/skrl-examples/omniisaacgym/torch_ant_ppo_headless.py'" \
   "Omniverse Isaac Gym and SKRL Torch Ant PPO"
 ```
 
