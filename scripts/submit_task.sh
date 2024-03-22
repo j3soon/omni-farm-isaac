@@ -40,5 +40,10 @@ curl -X POST "${FARM_URL}/queue/management/tasks/submit" \
         "task_args": {
             "args": "'"$2"'"
         },
+        "metadata": {
+            "_retry": {
+                "is_retryable": false
+            }
+        },
         "task_comment": "'"$3"'"
     }'
