@@ -3,6 +3,9 @@
   "name": "echo-example",
   "command": "echo",
   "job_spec_path": "null",
+  "capacity_requirements": {
+    "active_deadline_seconds": 864000
+  },
   "container": "ubuntu:latest",
   "allowed_args": {
     "args": {

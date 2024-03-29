@@ -7,7 +7,8 @@
   "capacity_requirements": {
     "resource_limits": {
       "nvidia.com/gpu": 1
-    }
+    },
+    "active_deadline_seconds": 864000
   },
   "container": "nvcr.io/nvidia/isaac-sim:2023.1.1",
   "allowed_args": {
