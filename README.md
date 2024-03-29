@@ -54,7 +54,7 @@ There doesn't seem to be a way to use the OpenVPN Connect v3 GUI on Linux as in 
 Then, copy your `.ovpn` client config file to `secrets/client.ovpn` and install the config with:
 
 ```sh
-scripts/vpn/install_config.sh
+scripts/vpn/install_config.sh client.ovpn
 ```
 
 Finally, connect to the VPN with:
