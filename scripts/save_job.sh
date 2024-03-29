@@ -29,6 +29,15 @@ if [ "$#" -ne 1 ]; then
 fi
 
 # Using an undocumented API endpoint
+echo "Trying to remove job definition in case of job definition update..."
+curl -X "POST" "${FARM_URL}/queue/management/jobs/remove" \
+    -H "Accept: application/json" \
+    -H "Content-Type: application/json" \
+    -H "X-API-KEY: ${FARM_API_KEY}" \
+    -d '{
+        "job_definition_name": "'"$1"'"
+    }'
+echo -e "\nSaving job definition..."
 curl -X "POST" "${FARM_URL}/queue/management/jobs/save" \
     -H "Accept: application/json" \
     -H "Content-Type: application/json" \
