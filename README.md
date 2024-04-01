@@ -55,27 +55,17 @@ All following commands assume you are in the root directory of this repository (
 
 There doesn't seem to be a way to use the OpenVPN Connect v3 GUI on Linux as in [Windows](https://openvpn.net/client/client-connect-vpn-for-windows/) or [MacOS](https://openvpn.net/client-connect-vpn-for-mac-os/). Instead, use the command line to install OpenVPN 3 Client by following [the official guide](https://openvpn.net/cloud-docs/owner/connectors/connector-user-guides/openvpn-3-client-for-linux.html).
 
-Then, copy your `.ovpn` client config file to `secrets/client.ovpn` and install the config with:
+Then, copy your `.ovpn` client config file to `secrets/client.ovpn` and install the config, and connect to the VPN with:
 
 ```sh
 scripts/vpn/install_config.sh client.ovpn
-```
-
-Finally, connect to the VPN with:
-
-```sh
 scripts/vpn/connect.sh
 ```
 
-To disconnect from the VPN, run:
+To disconnect from the VPN, and uninstall the VPN config, run:
 
 ```sh
 scripts/vpn/disconnect.sh
-```
-
-To uninstall the VPN config, run:
-
-```sh
 scripts/vpn/uninstall_config.sh
 ```
 
@@ -111,22 +101,22 @@ This demo allows running arbitrary shell commands on Omniverse Farm.
 Save the job definition file and verify it:
 
 ```sh
-scripts/save_job.sh isaac-sim-example
+scripts/save_job.sh isaac-sim-dummy-example
 scripts/load_job.sh
 ```
 
 Then, submit the job:
 
 ```sh
-scripts/submit_task.sh isaac-sim-example "./standalone_examples/api/omni.isaac.core/time_stepping.py" "Isaac Sim Time Stepping"
+scripts/submit_task.sh isaac-sim-dummy-example "./standalone_examples/api/omni.isaac.core/time_stepping.py" "Isaac Sim Time Stepping"
 # or
-scripts/submit_task.sh isaac-sim-example "./standalone_examples/api/omni.isaac.core/simulation_callbacks.py" "Isaac Sim Simulation Callbacks"
+scripts/submit_task.sh isaac-sim-dummy-example "./standalone_examples/api/omni.isaac.core/simulation_callbacks.py" "Isaac Sim Simulation Callbacks"
 ```
 
 You can remove the job definition file after the job has finished:
 
 ```sh
-scripts/remove_job.sh isaac-sim-example
+scripts/remove_job.sh isaac-sim-dummy-example
 ```
 
 This demo allows running arbitrary built-in Isaac Sim scripts on Omniverse Farm.
@@ -146,14 +136,14 @@ cd ../..
 Save the job definition file and verify it:
 
 ```sh
-scripts/save_job.sh isaac-sim-output-example
+scripts/save_job.sh isaac-sim-basic-example
 scripts/load_job.sh
 ```
 
 Then, submit the job:
 
 ```sh
-scripts/submit_task.sh isaac-sim-output-example \
+scripts/submit_task.sh isaac-sim-basic-example \
 "/run.sh \
   --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/2023.1.1/Scripts/isaac-sim-simulation-example.py' \
   --download-dest '/src/isaac-sim-simulation-example.py' \
@@ -166,7 +156,7 @@ scripts/submit_task.sh isaac-sim-output-example \
 You can remove the job definition file after the job has finished:
 
 ```sh
-scripts/remove_job.sh isaac-sim-output-example
+scripts/remove_job.sh isaac-sim-basic-example
 ```
 
 This demo allows running arbitrary Isaac Sim scripts on Omniverse Farm by downloading the necessary files, executing the specified command, and then uploading the output files to Nucleus.
@@ -234,7 +224,7 @@ cd ../..
 Replace `JOB_NAME` with the job definition name you want to use. Then, submit the job:
 
 ```sh
-JOB_NAME="isaac-sim-output-example"
+JOB_NAME="isaac-sim-basic-example"
 scripts/submit_task.sh $JOB_NAME \
 "/run.sh \
   --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/2023.1.1/Scripts/OmniIsaacGymEnvs' \
@@ -280,7 +270,7 @@ cd ../..
 Replace `JOB_NAME` with the job definition name you want to use. Then, submit the job:
 
 ```sh
-JOB_NAME="isaac-sim-output-example"
+JOB_NAME="isaac-sim-basic-example"
 scripts/submit_task.sh $JOB_NAME \
 "/run.sh \
   --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/2023.1.1/Scripts/oige-and-skrl' \

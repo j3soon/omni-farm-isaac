@@ -1,6 +1,6 @@
 {
   "job_type": "base",
-  "name": "isaac-sim-output-example",
+  "name": "isaac-sim-basic-example",
   "command": "bash",
   "args": ["-c"],
   "job_spec_path": "null",
