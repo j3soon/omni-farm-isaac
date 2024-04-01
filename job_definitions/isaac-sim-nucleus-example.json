@@ -8,23 +8,10 @@
     "resource_limits": {
       "nvidia.com/gpu": 1
     },
-    "env": [
+    "env_from": [
       {
-        "name": "OMNI_USER",
-        "valueFrom": {
-          "secretKeyRef": {
-            "key": "OMNI_USER",
-            "name": "nucleus-secret"
-          }
-        }
-      },
-      {
-        "name": "OMNI_PASS",
-        "valueFrom": {
-          "secretKeyRef": {
-            "key": "OMNI_PASS",
-            "name": "nucleus-secret"
-          }
+        "secretRef": {
+          "name": "nucleus-secret"
         }
       }
     ],
