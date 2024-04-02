@@ -38,8 +38,9 @@ curl -X "POST" "${FARM_URL}/queue/management/jobs/remove" \
         "job_definition_name": "'"$1"'"
     }'
 echo -e "\nSaving job definition..."
+json_content=$(jq --arg name "$1" '. + {name: $name}' "job_definitions/$1.json")
 curl -X "POST" "${FARM_URL}/queue/management/jobs/save" \
     -H "Accept: application/json" \
     -H "Content-Type: application/json" \
     -H "X-API-KEY: ${FARM_API_KEY}" \
-    --data-binary "@job_definitions/$1.json"
+    -d "$json_content"

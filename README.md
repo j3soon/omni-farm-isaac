@@ -350,10 +350,6 @@ If your task requires a GUI during development, see [this guide](https://github.
 
 ## Developer Notes
 
-- The job definitions are required to have the same filename and job definition name when using our scripts.
-
-  > This is a design flaw of this repo, which will often cause confusion when creating new job definitions. Hopefully, this should be fixed in recent updates.
-
 - The job definitions used above contains minimal configuration. You can include more configuration options by referring to the [Job Definition Docs](https://docs.omniverse.nvidia.com/farm/latest/guides/creating_job_definitions.html) and the [Farm Examples](https://docs.omniverse.nvidia.com/farm/latest/farm_examples.html).
 - The sample job definition files and the `scripts/save_job.sh` script only allows the use of a single argument `args`. You need to modify the job definition file and script to include more arguments if necessary.
 - Saving an updated job definition (`scripts/save_job.sh`) and submitting a task that refers to that job definition (`scripts/submit_task.sh`) doesn't seem to be always in sync. Please submit some dummy tasks to verify that the job definition changes are reflected in new tasks before submitting the actual task.

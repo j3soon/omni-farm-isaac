@@ -1,6 +1,5 @@
 {
   "job_type": "base",
-  "name": "isaac-sim-dummy-example",
   "command": "./python.sh",
   "args": ["-u"],
   "job_spec_path": "null",

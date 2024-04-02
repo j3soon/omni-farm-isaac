@@ -1,6 +1,5 @@
 {
   "job_type": "base",
-  "name": "echo-example",
   "command": "echo",
   "job_spec_path": "null",
   "capacity_requirements": {
