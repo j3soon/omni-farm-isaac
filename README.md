@@ -12,7 +12,7 @@ After installation, you should have a installed [Farm Queue](https://docs.omnive
 
 Follow [this example](https://docs.omniverse.nvidia.com/farm/latest/farm_examples.html) to test your Omniverse Farm installation. First, [submit a rendering job](https://docs.omniverse.nvidia.com/farm/latest/farm_examples.html#send-a-render-to-the-queue) through [Movie Capture](https://docs.omniverse.nvidia.com/extensions/latest/ext_core/ext_movie-capture.html). Next, [connect a Farm Agent to the Farm Queue](https://docs.omniverse.nvidia.com/farm/latest/farm_examples.html#add-agents-to-execute-on-the-render-task), and make sure the job finished successfully by checking the output files. Please skip the [Blender decimation example](https://docs.omniverse.nvidia.com/farm/latest/farm_examples.html#custom-decimation-task) in the documentation, as it is not relevant to this repository.
 
-> This repo is tested on Omniverse Farm 105.1.0 with [Kubernetes set up](https://docs.omniverse.nvidia.com/farm/latest/deployments/kubernetes.html).
+> This repo is tested on Omniverse Farm 105.1.0 with [Kubernetes set up](https://docs.omniverse.nvidia.com/farm/latest/deployments/kubernetes.html). The scripts are tested within a environment consists of multiple OVX server nodes with L40 GPUs, a CPU-only head node, along with a large NVMe storage server. These servers are interconnected via a high-speed network utilizing the BlueField-3 DPU and ConnectX-7 NIC. See [this post](https://blogs.nvidia.com/blog/ovx-storage-partner-validation-program/) and [this post](https://nvidianews.nvidia.com/news/nvidia-launches-data-center-scale-omniverse-computing-system-for-industrial-digital-twins) for more information. However, the scripts in this repository should work on any Omniverse Farm setup, even on a single machine.
 
 ## Setup
 
@@ -163,7 +163,7 @@ This demo allows running arbitrary Isaac Sim scripts on Omniverse Farm by downlo
 
 ### Setting Nucleus Credentials
 
-If your Nucleus server have a non-default username and password. Use `./omnicli auth [username] [password]` to enter your credentials for uploading files. In addition, use the `isaac-sim-nucleus-example.json` job description instead to include your username and password. The job description assumes the `nucleus-secret` is added to the K8s secrets by the admin. Alternatively, if security is not a concern, you may include the username and password directly through the `env` entry in the job descriptions.
+If your Nucleus server have a non-default username and password. Use `./omnicli auth [username] [password]` to enter your credentials for uploading files. In addition, use the `isaac-sim-nucleus-example.json` job description instead to include your username and password. The job description assumes `nucleus-secret` has been added to the K8s secrets by the admin, including `OMNI_USER` and `OMNI_PASS`. Alternatively, if security is not a concern, you may include the username and password directly through the `env` entry in the job descriptions.
 
 Use [`omnicli`](https://docs.omniverse.nvidia.com/connect/latest/connect-sample.html#omni-cli) to upload the script to Nucleus:
 
@@ -199,7 +199,52 @@ You can remove the job definition file after the job has finished:
 scripts/remove_job.sh isaac-sim-nucleus-example
 ```
 
+### Setting Persistent Volumes
+
+The aforementioned methods only upload the results after the specified command runs successfully, potentially resulting in loss of results if the command fails. To prevent this, you can mount a persistent volume to the container. The `isaac-sim-volume-example.json` job description assumes that `nfs-pv` connecting to a storage server through NFS has been added to K8s persistent volume, along with a corresponding `nfs-pvc` persistent volume claim by the admin. This method allows you to keep the partial results even if the command fails.
+
+> This NFS setup is preferable for multiple nodes over using [`volumeMounts.mountPath`](https://kubernetes.io/docs/concepts/storage/volumes/#hostpath-configuration-example). The latter mounts the volume to the node where the pod is running, which can become challenging to manage in clusters with multiple nodes.
+
+Use [`omnicli`](https://docs.omniverse.nvidia.com/connect/latest/connect-sample.html#omni-cli) to upload the script to Nucleus:
+
+```sh
+cd thirdparty/omnicli
+./omnicli copy "../../tasks/isaac-sim-simulation-example.py" "omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/2023.1.1/Scripts/isaac-sim-simulation-example.py"
+cd ../..
+```
+
+Save the job definition file and verify it:
+
+```sh
+scripts/save_job.sh isaac-sim-volume-example
+scripts/load_job.sh
+```
+
+Then, submit the job:
+
+```sh
+scripts/submit_task.sh isaac-sim-volume-example \
+"/run.sh \
+  --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/2023.1.1/Scripts/isaac-sim-simulation-example.py' \
+  --download-dest '/src/isaac-sim-simulation-example.py' \
+  'ls /mnt/nfs' \
+  'mkdir -p /mnt/nfs/results' \
+  './python.sh -u /src/isaac-sim-simulation-example.py 10' \
+  'cp /results/isaac-sim-simulation-example.txt /mnt/nfs/results/isaac-sim-simulation-example.txt'" \
+  "Isaac Sim Cube Fall"
+```
+
+You can remove the job definition file after the job has finished:
+
+```sh
+scripts/remove_job.sh isaac-sim-volume-example
+```
+
+Note that you can remove the `--download-src` and `--download-dest` options if the script is stored in the persistent volume. In addition, the `cp` command here is only for demonstration purposes, the best practice is to directly write the results in the persistent volume. This can be achieved by making the script accept an additional argument for the output directory.
+
 ## Examples for Running More Complex Tasks
+
+In this section, we only uses the [j3soon/omni-farm-isaac](https://hub.docker.com/r/j3soon/omni-farm-isaac/tags) docker image for simplicity. You can build your own docker image with the necessary dependencies and scripts for your tasks. This will require you to write a custom job definition and optionally copy `omnicli` when building your docker image.
 
 ### Omniverse Isaac Gym Tasks
 
@@ -306,6 +351,9 @@ If your task requires a GUI during development, see [this guide](https://github.
 ## Developer Notes
 
 - The job definitions are required to have the same filename and job definition name when using our scripts.
+
+  > This is a design flaw of this repo, which will often cause confusion when creating new job definitions. Hopefully, this should be fixed in recent updates.
+
 - The job definitions used above contains minimal configuration. You can include more configuration options by referring to the [Job Definition Docs](https://docs.omniverse.nvidia.com/farm/latest/guides/creating_job_definitions.html) and the [Farm Examples](https://docs.omniverse.nvidia.com/farm/latest/farm_examples.html).
 - The sample job definition files and the `scripts/save_job.sh` script only allows the use of a single argument `args`. You need to modify the job definition file and script to include more arguments if necessary.
 - Saving an updated job definition (`scripts/save_job.sh`) and submitting a task that refers to that job definition (`scripts/submit_task.sh`) doesn't seem to be always in sync. Please submit some dummy tasks to verify that the job definition changes are reflected in new tasks before submitting the actual task.
@@ -316,6 +364,9 @@ If your task requires a GUI during development, see [this guide](https://github.
   /isaac-sim/kit/python/bin/python3: can't open file '/isaac-sim/ ': [Errno 2] No such file or directory`.
   ```
 - Not sure why uploading files to Nucleus in docker using `omnicli` sometimes results in connection error: `Error: Connection`.
+- If a task refers to a job definition that doesn't exist, the task will be stuck in the `submitted` state.
+- If a task refers to a docker image that doesn't exist, the task will be stuck in the `running` state.
+- When using Omniverse Isaac Gym Envs with SKRL and Ray Tune, the task will sometimes complete but stuck in the `running` state.
 
 ## References
 
