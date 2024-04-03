@@ -71,6 +71,8 @@ scripts/vpn/uninstall_config.sh
 
 These 4 scripts are just wrappers for the `openvpn3` command line tool. See the [official documentation](https://community.openvpn.net/openvpn/wiki/OpenVPN3Linux) for more details.
 
+If a previous config is already installed, you must uninstall it before installing a new one. Otherwise, the scripts will create two VPN profiles with the same name, which can only be fixed by using the `openvpn3` command line tool directly.
+
 ## Running Shell Commands
 
 Save the job definition file and verify it:
@@ -201,7 +203,7 @@ scripts/remove_job.sh isaac-sim-nucleus-example
 
 ### Setting Persistent Volumes
 
-The aforementioned methods only upload the results after the specified command runs successfully, potentially resulting in loss of results if the command fails. To prevent this, you can mount a persistent volume to the container. The `isaac-sim-volume-example.json` job description assumes that `nfs-pv` connecting to a storage server through NFS has been added to K8s persistent volume, along with a corresponding `nfs-pvc` persistent volume claim by the admin. This method allows you to keep the partial results even if the command fails.
+The aforementioned methods only upload the results after the specified command runs successfully, potentially resulting in loss of results if the command fails. To prevent this, you can mount a persistent volume to the container. The `isaac-sim-volume-example.json` job description assumes that `nfs-pv` connecting to a storage server through NFS has been added to K8s persistent volume (PV), along with a corresponding `nfs-pvc` persistent volume claim (PVC) by the admin. This method allows you to keep the partial results even if the command fails.
 
 > This NFS setup is preferable for multiple nodes over using [`volumeMounts.mountPath`](https://kubernetes.io/docs/concepts/storage/volumes/#hostpath-configuration-example). The latter mounts the volume to the node where the pod is running, which can become challenging to manage in clusters with multiple nodes.
 
@@ -244,11 +246,11 @@ Note that you can remove the `--download-src` and `--download-dest` options if t
 
 ## Examples for Running More Complex Tasks
 
+> Make sure to follow the **Running Isaac Sim Tasks** section before moving on to this section.
+
 In this section, we only uses the [j3soon/omni-farm-isaac](https://hub.docker.com/r/j3soon/omni-farm-isaac/tags) docker image for simplicity. You can build your own docker image with the necessary dependencies and scripts for your tasks. This will require you to write a custom job definition and optionally copy `omnicli` when building your docker image.
 
-### Omniverse Isaac Gym Tasks
-
-> Make sure to follow the **Running Custom Isaac Sim Scripts** section before moving on to this section.
+### Omniverse Isaac Gym
 
 Use [`omnicli`](https://docs.omniverse.nvidia.com/connect/latest/connect-sample.html#omni-cli) to upload the script to Nucleus:
 
@@ -269,7 +271,7 @@ cd ../..
 Replace `JOB_NAME` with the job definition name you want to use. Then, submit the job:
 
 ```sh
-JOB_NAME="isaac-sim-basic-example"
+JOB_NAME="isaac-sim-volume-example"
 scripts/submit_task.sh $JOB_NAME \
 "/run.sh \
   --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/2023.1.1/Scripts/OmniIsaacGymEnvs' \
@@ -283,9 +285,7 @@ scripts/submit_task.sh $JOB_NAME \
 
 This demo allows running arbitrary Omniverse Isaac Gym scripts on Omniverse Farm by downloading the necessary files, executing the specified commands, and then uploading the output checkpoint files to Nucleus.
 
-### Omniverse Isaac Gym with SKRL Tasks
-
-> Make sure to follow the **Running Custom Isaac Sim Scripts** section before moving on to this section.
+### Omniverse Isaac Gym with SKRL
 
 Use [`omnicli`](https://docs.omniverse.nvidia.com/connect/latest/connect-sample.html#omni-cli) to upload the script to Nucleus:
 
@@ -315,7 +315,7 @@ cd ../..
 Replace `JOB_NAME` with the job definition name you want to use. Then, submit the job:
 
 ```sh
-JOB_NAME="isaac-sim-basic-example"
+JOB_NAME="isaac-sim-volume-example"
 scripts/submit_task.sh $JOB_NAME \
 "/run.sh \
   --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/2023.1.1/Scripts/oige-and-skrl' \
@@ -354,6 +354,7 @@ If your task requires a GUI during development, see [this guide](https://github.
 - The sample job definition files and the `scripts/save_job.sh` script only allows the use of a single argument `args`. You need to modify the job definition file and script to include more arguments if necessary.
 - Saving an updated job definition (`scripts/save_job.sh`) and submitting a task that refers to that job definition (`scripts/submit_task.sh`) doesn't seem to be always in sync. Please submit some dummy tasks to verify that the job definition changes are reflected in new tasks before submitting the actual task.
 - The default time limit (`active_deadline_seconds`) for K8s pods are set to `86400` (1 day) by Omniverse Farm. If the task takes longer than 1 day, the task will be terminated. After the K8s pod has been terminated, the K8s job will restart it once (`backoffLimit: 1`) even though `is_retryable` is set to False. This restarted K8s pod cannot be cancelled through the Omniverse UI. You can modify the time limit by changing the `active_deadline_seconds` field in the job definition file, we set it to 10 days in all job definitions, which is enough for most tasks.
+- In the examples, the number of requested GPUs per task is set to 1. You can modify the number of GPUs for different tasks by changing the `nvidia.com/gpu` field in the job definition file.
 - The `job_spec_path` is required for options such as `args` and `env` to be saved. If the `job_spec_path` is `null`, these options will be forced empty. In our examples, we simply set it to a dummy value (`"null"`). See [this thread](https://nvidia.slack.com/archives/C03AZDA710T/p1689869120574269) for more details.
 - If relative paths are not setup correctly, the task might fail due to the behavior of automatically prepending the path with the current working directory (`/isaac-sim`). This behavior may result in errors such as:
   ```
@@ -361,7 +362,7 @@ If your task requires a GUI during development, see [this guide](https://github.
   ```
 - Not sure why uploading files to Nucleus in docker using `omnicli` sometimes results in connection error: `Error: Connection`.
 - If a task refers to a job definition that doesn't exist, the task will be stuck in the `submitted` state.
-- If a task refers to a docker image that doesn't exist, the task will be stuck in the `running` state.
+- If a task refers to a docker image or a PVC that doesn't exist, the task will be stuck in the `running` state.
 - When using Omniverse Isaac Gym Envs with SKRL and Ray Tune, the task will sometimes complete but stuck in the `running` state.
 
 ## References
