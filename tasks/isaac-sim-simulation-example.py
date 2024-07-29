@@ -58,7 +58,7 @@ with open("/results/isaac-sim-simulation-example.txt", "w") as file:
 
 # (2) Write to Nucleus
 # Make sure to replace `localhost` with the IP address or hostname of the machine running Nucleus.
-result = omni.client.write_file("omniverse://localhost/Projects/J3soon/Isaac/2023.1.1/Outputs/isaac-sim-simulation-example.txt", output.encode())
+result = omni.client.write_file("omniverse://localhost/Projects/J3soon/Isaac/4.1/Outputs/isaac-sim-simulation-example.txt", output.encode())
 print(result)
 
 simulation_app.close() # close Isaac Sim

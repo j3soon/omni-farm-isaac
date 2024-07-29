@@ -9,7 +9,7 @@
     },
     "active_deadline_seconds": 864000
   },
-  "container": "nvcr.io/nvidia/isaac-sim:2023.1.1",
+  "container": "nvcr.io/nvidia/isaac-sim:4.1.0",
   "allowed_args": {
     "args": {
       "arg": "",

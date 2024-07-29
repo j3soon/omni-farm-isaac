@@ -138,7 +138,7 @@ Use [`omnicli`](https://docs.omniverse.nvidia.com/connect/latest/connect-sample.
 
 ```sh
 cd thirdparty/omnicli
-./omnicli copy "../../tasks/isaac-sim-simulation-example.py" "omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/2023.1.1/Scripts/isaac-sim-simulation-example.py"
+./omnicli copy "../../tasks/isaac-sim-simulation-example.py" "omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/4.1/Scripts/isaac-sim-simulation-example.py"
 cd ../..
 ```
 
@@ -154,10 +154,10 @@ Then, submit the job:
 ```sh
 scripts/submit_task.sh isaac-sim-basic-example \
 "/run.sh \
-  --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/2023.1.1/Scripts/isaac-sim-simulation-example.py' \
+  --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/4.1/Scripts/isaac-sim-simulation-example.py' \
   --download-dest '/src/isaac-sim-simulation-example.py' \
   --upload-src '/results/isaac-sim-simulation-example.txt' \
-  --upload-dest 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/2023.1.1/Results/isaac-sim-simulation-example.txt' \
+  --upload-dest 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/4.1/Results/isaac-sim-simulation-example.txt' \
   './python.sh -u /src/isaac-sim-simulation-example.py 10'" \
   "Isaac Sim Cube Fall"
 ```
@@ -178,7 +178,7 @@ Use [`omnicli`](https://docs.omniverse.nvidia.com/connect/latest/connect-sample.
 
 ```sh
 cd thirdparty/omnicli
-./omnicli copy "../../tasks/isaac-sim-simulation-example.py" "omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/2023.1.1/Scripts/isaac-sim-simulation-example.py"
+./omnicli copy "../../tasks/isaac-sim-simulation-example.py" "omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/4.1/Scripts/isaac-sim-simulation-example.py"
 cd ../..
 ```
 
@@ -194,10 +194,10 @@ Then, submit the job:
 ```sh
 scripts/submit_task.sh isaac-sim-nucleus-example \
 "/run.sh \
-  --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/2023.1.1/Scripts/isaac-sim-simulation-example.py' \
+  --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/4.1/Scripts/isaac-sim-simulation-example.py' \
   --download-dest '/src/isaac-sim-simulation-example.py' \
   --upload-src '/results/isaac-sim-simulation-example.txt' \
-  --upload-dest 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/2023.1.1/Results/isaac-sim-simulation-example.txt' \
+  --upload-dest 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/4.1/Results/isaac-sim-simulation-example.txt' \
   './python.sh -u /src/isaac-sim-simulation-example.py 10'" \
   "Isaac Sim Cube Fall"
 ```
@@ -218,7 +218,7 @@ Use [`omnicli`](https://docs.omniverse.nvidia.com/connect/latest/connect-sample.
 
 ```sh
 cd thirdparty/omnicli
-./omnicli copy "../../tasks/isaac-sim-simulation-example.py" "omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/2023.1.1/Scripts/isaac-sim-simulation-example.py"
+./omnicli copy "../../tasks/isaac-sim-simulation-example.py" "omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/4.1/Scripts/isaac-sim-simulation-example.py"
 cd ../..
 ```
 
@@ -234,7 +234,7 @@ Then, submit the job:
 ```sh
 scripts/submit_task.sh isaac-sim-volume-example \
 "/run.sh \
-  --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/2023.1.1/Scripts/isaac-sim-simulation-example.py' \
+  --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/4.1/Scripts/isaac-sim-simulation-example.py' \
   --download-dest '/src/isaac-sim-simulation-example.py' \
   'ls /mnt/nfs' \
   'mkdir -p /mnt/nfs/results' \

@@ -1,3 +1,3 @@
-FROM nvcr.io/nvidia/isaac-sim:2023.1.1
+FROM nvcr.io/nvidia/isaac-sim:4.1.0
 COPY thirdparty/omnicli /omnicli
 COPY scripts/docker/run.sh /run.sh
