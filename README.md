@@ -71,7 +71,14 @@ scripts/vpn/uninstall_config.sh
 
 These 4 scripts are just wrappers for the `openvpn3` command line tool. See the [official documentation](https://community.openvpn.net/openvpn/wiki/OpenVPN3Linux) for more details.
 
-If a previous config is already installed, you must uninstall it before installing a new one. Otherwise, the scripts will create two VPN profiles with the same name, which can only be fixed by using the `openvpn3` command line tool directly.
+If a previous config is already installed, you must uninstall it before installing a new one. Otherwise, the scripts will create two VPN profiles with the same name, which can only be fixed by using the `openvpn3` command line tool directly. Specifically, use the following commands:
+
+```sh
+openvpn3 sessions-list
+openvpn3 session-manage -D --session-path "/net/openvpn/v3/sessions/<SESSION_ID>"
+openvpn3 configs-list --verbose
+openvpn3 config-remove --path "/net/openvpn/v3/configuration/<CONFIG_ID>"
+```
 
 ## Running Shell Commands
 
