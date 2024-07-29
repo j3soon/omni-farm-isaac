@@ -165,7 +165,7 @@ This demo allows running arbitrary Isaac Sim scripts on Omniverse Farm by downlo
 
 ### Setting Nucleus Credentials
 
-If your Nucleus server have a non-default username and password. Use `./omnicli auth [username] [password]` to enter your credentials for uploading files. In addition, use the `isaac-sim-nucleus-example.json` job description instead to include your username and password. The job description assumes `nucleus-secret` has been added to the K8s secrets by the admin, including `OMNI_USER` and `OMNI_PASS`. Alternatively, if security is not a concern, you may include the username and password directly through the `env` entry in the job descriptions.
+If your Nucleus server have a non-default username and password. Use `./omnicli auth [username] [password]` to enter your credentials for uploading files. Alternatively, you can use Omniverse Launcher to perform authentication through a GUI. In addition, use the `isaac-sim-nucleus-example.json` job description instead to include your username and password. The job description assumes `nucleus-secret` has been added to the K8s secrets by the admin, including `OMNI_USER` and `OMNI_PASS`. Alternatively, if security is not a concern, you may include the username and password directly through the `env` entry in the job descriptions.
 
 Use [`omnicli`](https://docs.omniverse.nvidia.com/connect/latest/connect-sample.html#omni-cli) to upload the script to Nucleus:
 
@@ -361,9 +361,12 @@ If your task requires a GUI during development, see [this guide](https://github.
   ```
   /isaac-sim/kit/python/bin/python3: can't open file '/isaac-sim/ ': [Errno 2] No such file or directory`.
   ```
-- Not sure why uploading files to Nucleus in docker using `omnicli` sometimes results in connection error: `Error: Connection`.
 - If a task refers to a job definition that doesn't exist, the task will be stuck in the `submitted` state.
 - If a task refers to a docker image or a PVC that doesn't exist, the task will be stuck in the `running` state.
+- When using `tar` on a mounted volume, make sure to use the `--no-same-owner` flag to prevent the following error:
+  ```
+  tar: XXX: Cannot change ownership to uid XXX, gid XXX: Operation not permitted
+  ```
 - When using Omniverse Isaac Gym Envs with SKRL and Ray Tune, the task will sometimes complete but stuck in the `running` state.
 
 ## References
