@@ -254,13 +254,46 @@ scripts/remove_job.sh isaac-sim-volume-example
 
 Note that you can remove the `--download-src` and `--download-dest` options if the script is stored in the persistent volume. In addition, the `cp` command here is only for demonstration purposes, the best practice is to directly write the results in the persistent volume. This can be achieved by making the script accept an additional argument for the output directory.
 
-## Examples for Running More Complex Tasks
+## Running Isaac Lab Tasks
 
 > Make sure to follow the **Running Isaac Sim Tasks** section before moving on to this section.
 
-In this section, we only uses the [j3soon/omni-farm-isaac](https://hub.docker.com/r/j3soon/omni-farm-isaac/tags) docker image for simplicity. You can build your own docker image with the necessary dependencies and scripts for your tasks. This will require you to write a custom job definition and optionally copy `omnicli` when building your docker image.
+The demo tasks here assume the aforementioned `nuclues-secret` and `nfs-pvc` setup. You can modify the job definition files to include your own credentials and persistent volume claim.
 
-(TODO: Add Isaac Lab Example)
+In this section, we only uses the [j3soon/omni-farm-isaaclab](https://hub.docker.com/r/j3soon/omni-farm-isaaclab/tags) docker image for simplicity. You can build your own docker image with the necessary dependencies and scripts for your tasks. This will require you to write a custom job definition and optionally copy `omnicli` when building your docker image.
+
+### Built-in Tasks
+
+Save the job definition file and verify it:
+
+```sh
+scripts/save_job.sh isaac-lab-volume-example
+scripts/load_job.sh
+```
+
+Then, submit the job:
+
+```sh
+scripts/submit_task.sh isaac-lab-volume-example \
+"/run.sh \
+  --upload-src '/root/IsaacLab/logs' \
+  --upload-dest 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/4.1/Results/IsaacLab/logs' \
+  'ls /mnt/nfs' \
+  'mkdir -p /mnt/nfs/results/IsaacLab/logs' \
+  'ln -s /mnt/nfs/results/IsaacLab/logs logs' \
+  '. /opt/conda/etc/profile.d/conda.sh' \
+  'conda activate isaaclab' \
+  './isaaclab.sh -p source/standalone/workflows/rl_games/train.py --task Isaac-Ant-v0 --headless'" \
+  "Isaac Lab RL-Games Isaac-Ant-v0"
+```
+
+You can remove the job definition file after the job has finished:
+
+```sh
+scripts/remove_job.sh isaac-lab-volume-example
+```
+
+This demo allows running arbitrary built-in Isaac Lab scripts on Omniverse Farm.
 
 ## Running Isaac Sim Jobs Locally During Development
 
