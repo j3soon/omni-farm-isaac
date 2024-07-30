@@ -1,5 +1,5 @@
 # Ref: https://docs.docker.com/build/ci/github-actions/
-name: Build Docker Image for omni-farm-isaac
+name: Build Docker Image for omni-farm-isaaclab
 
 on:
   push:
@@ -8,10 +8,10 @@ on:
     tags:
       - v*
     paths:
-      - .github/workflows/build.yaml
+      - .github/workflows/build_isaaclab.yaml
       - thirdparty/**
       - scripts/docker/run.sh
-      - Dockerfile
+      - Dockerfile.isaaclab
       - .dockerignore
 
 jobs:
@@ -54,8 +54,8 @@ jobs:
         # Ref: https://github.com/docker/metadata-action
         uses: docker/metadata-action@v5
         with:
-          # Link: https://hub.docker.com/repository/docker/j3soon/omni-farm-isaac/tags
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/omni-farm-isaac
+          # Link: https://hub.docker.com/repository/docker/j3soon/omni-farm-isaaclab/tags
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/omni-farm-isaaclab
           tags: |
             type=raw,value={{date 'YYYYMMDD'}}
             type=raw,value=${{ env.VERSION }}
@@ -80,6 +80,6 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./Dockerfile
+          file: ./Dockerfile.isaaclab
           push: true
           tags: ${{ steps.meta.outputs.tags }}

@@ -1,6 +1,9 @@
 # Running Isaac Sim Workloads on Omniverse Farm
 
-[<img src="https://img.shields.io/badge/dockerhub-image-important.svg?logo=docker">](https://hub.docker.com/r/j3soon/omni-farm-isaac/tags)
+| Docker Image | Docker Hub Link |
+|--------------|-----------------|
+| `j3soon/omni-farm-isaac` | [<img src="https://img.shields.io/badge/dockerhub-image-important.svg?logo=docker">](https://hub.docker.com/r/j3soon/omni-farm-isaac/tags) |
+| `j3soon/omni-farm-isaaclab` | [<img src="https://img.shields.io/badge/dockerhub-image-important.svg?logo=docker">](https://hub.docker.com/r/j3soon/omni-farm-isaaclab/tags) |
 
 ## Installing Omniverse Farm
 
@@ -264,6 +267,8 @@ In this section, we only uses the [j3soon/omni-farm-isaac](https://hub.docker.co
 For headless tasks, simply follow [the official guide](https://docs.omniverse.nvidia.com/isaacsim/latest/installation/install_container.html).
 
 If your task requires a GUI during development, see [this guide](https://github.com/j3soon/isaac-extended#docker-container-with-display).
+
+Refer to [scripts/docker](scripts/docker) for potential useful scripts for running Isaac Sim tasks locally.
 
 ## Developer Notes
 
