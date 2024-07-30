@@ -9,6 +9,28 @@
 
 > Skip this section if you already have Omniverse Farm installed.
 
+### Pre-Installation
+
+Before proceeding with the installation, make sure you have modified the following values:
+
+- `max_capacity: 32`  
+  The default maximum capacity of the Omniverse Farm [is set to 32](https://docs.omniverse.nvidia.com/farm/latest/deployments/kubernetes.html#b-capacity-tuning). You can modify this value to a number larger than the GPUs available in your system. This can be found in the `values.yaml` file in the `omniverse-farm-x.x.x.tgz` file:
+  ```yaml
+  capacity:
+    # -- Specify the max number of jobs the controller is allowed to run.
+    max_capacity: 32
+  ```
+  and modify it to something like:
+  ```yaml
+  capacity:
+    # -- Specify the max number of jobs the controller is allowed to run.
+    max_capacity: 1024
+  ```
+
+(Note that the pre-installation steps are not tested on a real machine yet...)
+
+### Installation
+
 Follow the official [installation guide](https://docs.omniverse.nvidia.com/farm/latest/deployments/introduction.html) to install Omniverse Farm.
 
 After installation, you should have a installed [Farm Queue](https://docs.omniverse.nvidia.com/farm/latest/queue.html), and one or more [Farm Agent](https://docs.omniverse.nvidia.com/farm/latest/agent.html) workers installed, which can be connected to the queue in subsequent steps. All Farm Agents should have access to the USD scenes that would be used in the submitted jobs through Nucleus.
@@ -16,6 +38,42 @@ After installation, you should have a installed [Farm Queue](https://docs.omnive
 Follow [this example](https://docs.omniverse.nvidia.com/farm/latest/farm_examples.html) to test your Omniverse Farm installation. First, [submit a rendering job](https://docs.omniverse.nvidia.com/farm/latest/farm_examples.html#send-a-render-to-the-queue) through [Movie Capture](https://docs.omniverse.nvidia.com/extensions/latest/ext_core/ext_movie-capture.html). Next, [connect a Farm Agent to the Farm Queue](https://docs.omniverse.nvidia.com/farm/latest/farm_examples.html#add-agents-to-execute-on-the-render-task), and make sure the job finished successfully by checking the output files. Please skip the [Blender decimation example](https://docs.omniverse.nvidia.com/farm/latest/farm_examples.html#custom-decimation-task) in the documentation, as it is not relevant to this repository.
 
 > This repo is tested on Omniverse Farm 105.1.0 with [Kubernetes set up](https://docs.omniverse.nvidia.com/farm/latest/deployments/kubernetes.html). The scripts are tested within a environment consists of multiple OVX server nodes with L40 GPUs, a CPU-only head node, along with a large NVMe storage server. These servers are interconnected via a high-speed network utilizing the BlueField-3 DPU and ConnectX-7 NIC. See [this post](https://blogs.nvidia.com/blog/ovx-storage-partner-validation-program/) and [this post](https://nvidianews.nvidia.com/news/nvidia-launches-data-center-scale-omniverse-computing-system-for-industrial-digital-twins) for more information. However, the scripts in this repository should work on any Omniverse Farm setup, even on a single machine.
+
+### Post-Installation
+
+If you forgot to perform the pre-installation steps, you can still perform them after installation:
+
+- `max_capacity: 32`  
+  ```sh
+  kubectl edit cm/controller-capacity -n ov-farm
+  ```
+  Change
+  ```yaml
+  apiVersion: v1
+  data:
+    capacity.json: |2-
+
+      {
+        "max_capacity": 32
+      }
+  kind: ConfigMap
+  ```
+  to
+  ```yaml
+  apiVersion: v1
+  data:
+    capacity.json: |2-
+
+      {
+        "max_capacity": 512
+      }
+  kind: ConfigMap
+  ```
+  save and close the file. Then run:
+  ```sh
+  kubectl delete pods/controller-0 -n ov-farm
+  ```
+  and wait for the controller pod to automatically restart.
 
 ## Setup
 
@@ -309,7 +367,11 @@ Refer to [scripts/docker](scripts/docker) for potential useful scripts for runni
 - The sample job definition files and the `scripts/save_job.sh` script only allows the use of a single argument `args`. You need to modify the job definition file and script to include more arguments if necessary.
 - Saving an updated job definition (`scripts/save_job.sh`) and submitting a task that refers to that job definition (`scripts/submit_task.sh`) doesn't seem to be always in sync. Please submit some dummy tasks to verify that the job definition changes are reflected in new tasks before submitting the actual task.
 - The default time limit (`active_deadline_seconds`) for K8s pods are set to `86400` (1 day) by Omniverse Farm. If the task takes longer than 1 day, the task will be terminated. After the K8s pod has been terminated, the K8s job will restart it once (`backoffLimit: 1`) even though `is_retryable` is set to False. This restarted K8s pod cannot be cancelled through the Omniverse UI. You can modify the time limit by changing the `active_deadline_seconds` field in the job definition file, we set it to 10 days in all job definitions, which is enough for most tasks.
-- The behavior of K8s jobs restarting K8s pods (`backoffLimit: 1`) after K8s pod termination appear to happen when the command exits with a non-zero status code. I believe this could be fixed by overriding the K8s job template during Omniverse Farm installation, as described [here](https://docs.omniverse.nvidia.com/farm/latest/deployments/kubernetes.html#step-2). However, I haven't tested this yet.
+- The behavior of K8s jobs restarting K8s pods (`backoffLimit: 1`) after K8s pod termination appear to happen when the command exits with a non-zero status code. This issue can be observed by running the following:
+  ```sh
+  kubectl get jobs -n ov-farm -o yaml | grep backoffLimit
+  ```
+  - The default backoff limit of the Omniverse Farm is set to 1. Originally, I thought this could be fixed by overriding the K8s job template during Omniverse Farm pre-installation, as described [here](https://docs.omniverse.nvidia.com/farm/latest/deployments/kubernetes.html#step-2). However, after some trial and error with [@timost1234](https://github.com/timost1234), it seems that we cannot change this value. Since the `cm/controller-job-template-spec-overrides` ConfigMap doesn't seem to allow changing the `backoffLimit` field.
 - In the examples, the number of requested GPUs per task is set to 1. You can modify the number of GPUs for different tasks by changing the `nvidia.com/gpu` field in the job definition file.
 - The `job_spec_path` is required for options such as `args` and `env` to be saved. If the `job_spec_path` is `null`, these options will be forced empty. In our examples, we simply set it to a dummy value (`"null"`). See [this thread](https://nvidia.slack.com/archives/C03AZDA710T/p1689869120574269) for more details.
 - If relative paths are not setup correctly, the task might fail due to the behavior of automatically prepending the path with the current working directory (`/isaac-sim`). This behavior may result in errors such as:
