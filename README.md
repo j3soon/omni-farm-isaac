@@ -285,6 +285,11 @@ If your task requires a GUI during development, see [this guide](https://github.
   tar: XXX: Cannot change ownership to uid XXX, gid XXX: Operation not permitted
   ```
 - When using Omniverse Isaac Gym Envs with SKRL and Ray Tune, the task will sometimes complete but stuck in the `running` state.
+- When using `omnicli`, sometimes the following error occurs:
+  ```
+  Error: no DISPLAY environment variable specified
+  ```
+  which can be fixed by running the `omnicli` command in a terminal with desktop support, and enter username and password through the browser.
 
 ## References
 
