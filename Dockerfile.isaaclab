@@ -64,6 +64,13 @@ RUN . /opt/conda/etc/profile.d/conda.sh \
     && ./isaaclab.sh --install
 RUN echo "conda activate isaaclab" >> ~/.bashrc
 
+# Install ffmpeg for video recording
+# Ref: https://isaac-sim.github.io/IsaacLab/source/how-to/wrap_rl_env.html#wrapper-for-recording-videos
+RUN apt-get update \
+    && apt-get install -y \
+        ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+
 # Tools and scripts for Omniverse Farm
 COPY thirdparty/omnicli /omnicli
 COPY scripts/docker/run.sh /run.sh
