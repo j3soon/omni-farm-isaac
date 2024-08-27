@@ -390,6 +390,20 @@ Refer to [scripts/docker](scripts/docker) for potential useful scripts for runni
   Error: no DISPLAY environment variable specified
   ```
   which can be fixed by running the `omnicli` command in a terminal with desktop support, and enter username and password through the browser.
+- If the following error occurs in the Omniverse Farm UI:
+  ```
+  Error: Connection
+  ```
+  This may be due to incorrect Nuclues credentials or incorrect Nucleus server URL. Try launching a `sleep infinity` task and exec into the pod to debug the issue:
+  ```sh
+  kubectl exec -it -n ov-farm <POD_ID> -- /bin/bash
+  # in the container
+  env | grep OMNI
+  # check that `OMNI_USER` and `OMNI_PASS` are set correctly
+  apt-get update && apt-get install -y iputils-ping
+  ping <NUCLEUS_HOSTNAME>
+  # check that the Nucleus server is reachable
+  ```
 
 ## References
 
