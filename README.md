@@ -2,9 +2,21 @@
 
 ## Support Matrix
 
+The scripts below are currently based on Isaac Sim 4.1.0 and Isaac Lab 1.1.0. The scripts should work on other versions of Isaac Sim and Isaac Lab, but you may need to modify the scripts accordingly.
+
+### Isaac Sim
+
 | Docker Image | Base Image |
 |--------------|------------|
+| [`j3soon/omni-farm-isaac-sim:4.2.0`](https://hub.docker.com/r/j3soon/omni-farm-isaac-sim/tags?name=4.1.0) | Isaac Sim 4.2.0 |
 | [`j3soon/omni-farm-isaac-sim:4.1.0`](https://hub.docker.com/r/j3soon/omni-farm-isaac-sim/tags?name=4.1.0) | Isaac Sim 4.1.0 |
+| [`j3soon/omni-farm-isaac-sim:4.0.0`](https://hub.docker.com/r/j3soon/omni-farm-isaac-sim/tags?name=4.1.0) | Isaac Sim 4.0.0 |
+| [`j3soon/omni-farm-isaac-sim:2023.1.1`](https://hub.docker.com/r/j3soon/omni-farm-isaac-sim/tags?name=4.1.0) | Isaac Sim 2023.1.1 |
+
+### Isaac Lab
+
+| Docker Image | Base Image |
+|--------------|------------|
 | [`j3soon/omni-farm-isaac-lab:1.1.0`](https://hub.docker.com/r/j3soon/omni-farm-isaac-lab/tags?name=1.1.0) | Isaac Sim 4.1.0 |
 
 ## Installing Omniverse Farm
