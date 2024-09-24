@@ -1,5 +1,5 @@
 # Ref: https://docs.docker.com/build/ci/github-actions/
-name: Build Docker Image for omni-farm-isaaclab
+name: Build Docker Image for omni-farm-isaac-lab:1.1.0
 
 on:
   push:
@@ -8,10 +8,10 @@ on:
     tags:
       - v*
     paths:
-      - .github/workflows/build_isaaclab.yaml
+      - .github/workflows/build_isaac_lab_1_1_0.yaml
       - thirdparty/**
       - scripts/docker/run.sh
-      - Dockerfile.isaaclab
+      - Dockerfile_isaac_lab_1_1_0
       - .dockerignore
 
 jobs:
@@ -43,8 +43,8 @@ jobs:
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
           # This strips the "v" prefix from the tag name.
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          # This uses the Docker `latest` tag convention.
-          [ "$VERSION" == "master" ] && VERSION=latest
+          # This doesn't use the Docker `latest` tag convention.
+          [ "$VERSION" == "master" ] && VERSION=""
           # Output the environment variable
           # Ref: https://stackoverflow.com/a/57989070
           echo "VERSION=$VERSION" >> $GITHUB_ENV
@@ -54,11 +54,11 @@ jobs:
         # Ref: https://github.com/docker/metadata-action
         uses: docker/metadata-action@v5
         with:
-          # Link: https://hub.docker.com/repository/docker/j3soon/omni-farm-isaaclab/tags
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/omni-farm-isaaclab
+          # Link: https://hub.docker.com/repository/docker/j3soon/omni-farm-isaac-lab/tags
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/omni-farm-isaac-lab
           tags: |
-            type=raw,value={{date 'YYYYMMDD'}}
-            type=raw,value=${{ env.VERSION }}
+            type=raw,value=1.1.0-{{ date 'YYYYMMDD' }}
+            type=raw,value=1.1.0-${{ env.VERSION }}
       -
         name: Login to Docker Hub
         uses: docker/login-action@v2
@@ -80,6 +80,6 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./Dockerfile.isaaclab
+          file: ./Dockerfile_isaac_lab_1_1_0
           push: true
           tags: ${{ steps.meta.outputs.tags }}
