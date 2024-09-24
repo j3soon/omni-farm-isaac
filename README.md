@@ -1,9 +1,11 @@
 # Running Isaac Sim Workloads on Omniverse Farm
 
-| Docker Image | Docker Hub Link |
-|--------------|-----------------|
-| `j3soon/omni-farm-isaac` | [<img src="https://img.shields.io/badge/dockerhub-image-important.svg?logo=docker">](https://hub.docker.com/r/j3soon/omni-farm-isaac/tags) |
-| `j3soon/omni-farm-isaaclab` | [<img src="https://img.shields.io/badge/dockerhub-image-important.svg?logo=docker">](https://hub.docker.com/r/j3soon/omni-farm-isaaclab/tags) |
+## Support Matrix
+
+| Docker Image | Base Image |
+|--------------|------------|
+| [`j3soon/omni-farm-isaac-sim:4.1.0`](https://hub.docker.com/r/j3soon/omni-farm-isaac-sim/tags?name=4.1.0) | Isaac Sim 4.1.0 |
+| [`j3soon/omni-farm-isaac-lab:1.1.0`](https://hub.docker.com/r/j3soon/omni-farm-isaac-lab/tags?name=1.1.0) | Isaac Sim 4.1.0 |
 
 ## Installing Omniverse Farm
 
