@@ -9,7 +9,7 @@
     },
     "active_deadline_seconds": 864000
   },
-  "container": "j3soon/omni-farm-isaac:latest",
+  "container": "j3soon/omni-farm-isaac-sim:4.1.0",
   "allowed_args": {
     "args": {
       "arg": "",
