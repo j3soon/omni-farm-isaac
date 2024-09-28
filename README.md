@@ -418,6 +418,15 @@ Refer to [scripts/docker](scripts/docker) for potential useful scripts for runni
   ping <NUCLEUS_HOSTNAME>
   # check that the Nucleus server is reachable
   ```
+- Omniverse Farm webpage logs show the following error when using custom built docker image:
+  ```sh
+
+  #### Agent ID: controller-0.controller.ov-farm.svc.cluster.local-1
+  /bin/bash: - : invalid option
+  Process exited with return code: -1
+  ```
+
+  This may be due to building on Windows, try a Linux environment instead.
 
 ## References
 
