@@ -1,5 +1,7 @@
 # Running Isaac Sim Workloads on Omniverse Farm
 
+These scripts are only tested on Linux environment (Ubuntu). If you are using MacOS or Windows, consider using Virtual Box to setup a Ubuntu virtual machine. WSL2 may work but hasn't been tested.
+
 ## Support Matrix
 
 The scripts below are currently based on Isaac Sim 4.1.0 and Isaac Lab 1.1.0. The scripts should work on other versions of Isaac Sim and Isaac Lab, but you may need to modify the scripts accordingly.
