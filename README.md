@@ -21,7 +21,7 @@ The scripts below are currently based on Isaac Sim 4.1.0 and Isaac Lab 1.1.0. Th
 
 ## Installing Omniverse Farm
 
-> Skip this section if you already have Omniverse Farm installed.
+> Only the cluster admin should read this section. Please skip to the [Setup section](#setup) if you are a user or already have Omniverse Farm installed.
 
 ### Pre-Installation
 
@@ -146,14 +146,14 @@ scripts/vpn/uninstall_config.sh
 
 These 4 scripts are just wrappers for the `openvpn3` command line tool. See the [official documentation](https://community.openvpn.net/openvpn/wiki/OpenVPN3Linux) for more details.
 
-If a previous config is already installed, you must uninstall it before installing a new one. Otherwise, the scripts will create two VPN profiles with the same name, which can only be fixed by using the `openvpn3` command line tool directly. Specifically, use the following commands:
-
-```sh
-openvpn3 sessions-list
-openvpn3 session-manage -D --session-path "/net/openvpn/v3/sessions/<SESSION_ID>"
-openvpn3 configs-list --verbose
-openvpn3 config-remove --path "/net/openvpn/v3/configuration/<CONFIG_ID>"
-```
+> If a previous config is already installed, you must uninstall it before installing a new one. Otherwise, the scripts will create two VPN profiles with the same name, which can only be fixed by using the `openvpn3` command line tool directly. Specifically, use the following commands:
+>
+> ```sh
+> openvpn3 sessions-list
+> openvpn3 session-manage -D --session-path "/net/openvpn/v3/sessions/<SESSION_ID>"
+> openvpn3 configs-list --verbose
+> openvpn3 config-remove --path "/net/openvpn/v3/configuration/<CONFIG_ID>"
+> ```
 
 ## Running Shell Commands
 
@@ -326,6 +326,10 @@ scripts/remove_job.sh isaac-sim-volume-example
 
 Note that you can remove the `--download-src` and `--download-dest` options if the script is stored in the persistent volume. In addition, the `cp` command here is only for demonstration purposes, the best practice is to directly write the results in the persistent volume. This can be achieved by making the script accept an additional argument for the output directory.
 
+> If your job stuck in the `running` state and output no logs, you may have mounted an incorrect PVC. Double check the `README` file and example job description provided by the cluster admin.
+
+> If you are not running Isaac tasks, you can skip the remaining sections.
+
 ## Running Isaac Lab Tasks
 
 > Make sure to follow the **Running Isaac Sim Tasks** section before moving on to this section.
@@ -394,6 +398,9 @@ Refer to [scripts/docker](scripts/docker) for potential useful scripts for runni
   ```
 - If a task refers to a job definition that doesn't exist, the task will be stuck in the `submitted` state.
 - If a task refers to a docker image or a PVC that doesn't exist, the task will be stuck in the `running` state.
+  ```sh
+  No logs found for task xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx on agent None: 'No logs found for Task xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.'
+  ```
 - When using `tar` on a mounted volume, make sure to use the `--no-same-owner` flag to prevent the following error:
   ```
   tar: XXX: Cannot change ownership to uid XXX, gid XXX: Operation not permitted
