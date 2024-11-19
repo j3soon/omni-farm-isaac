@@ -180,6 +180,12 @@ scripts/submit_task.sh echo-example "hello world" "Echo hello world"
 
 This demo allows running arbitrary shell commands on Omniverse Farm.
 
+## Canceling Tasks
+
+To cancel tasks, go to the Omniverse Farm UI, select all tasks you want to cancel, and select `Bulk Actions > Cancel` and click the `Apply` button.
+
+![](docs/assets/cancel-tasks.png)
+
 ## Running Isaac Sim Tasks
 
 ### Built-in Tasks
