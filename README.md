@@ -172,11 +172,11 @@ Then, submit the job:
 scripts/submit_task.sh echo-example "hello world" "Echo hello world"
 ```
 
-You can remove the job definition file after the job has finished:
-
-```sh
-scripts/remove_job.sh echo-example
-```
+> Optionally, you can remove the job definition file after the job has finished:
+> 
+> ```sh
+> scripts/remove_job.sh echo-example
+> ```
 
 This demo allows running arbitrary shell commands on Omniverse Farm.
 
@@ -199,11 +199,11 @@ scripts/submit_task.sh isaac-sim-dummy-example "./standalone_examples/api/omni.i
 scripts/submit_task.sh isaac-sim-dummy-example "./standalone_examples/api/omni.isaac.core/simulation_callbacks.py" "Isaac Sim Simulation Callbacks"
 ```
 
-You can remove the job definition file after the job has finished:
-
-```sh
-scripts/remove_job.sh isaac-sim-dummy-example
-```
+> Optionally, you can remove the job definition file after the job has finished:
+> 
+> ```sh
+> scripts/remove_job.sh isaac-sim-dummy-example
+> ```
 
 This demo allows running arbitrary built-in Isaac Sim scripts on Omniverse Farm.
 
@@ -239,11 +239,11 @@ scripts/submit_task.sh isaac-sim-basic-example \
   "Isaac Sim Cube Fall"
 ```
 
-You can remove the job definition file after the job has finished:
-
-```sh
-scripts/remove_job.sh isaac-sim-basic-example
-```
+> Optionally, you can remove the job definition file after the job has finished:
+> 
+> ```sh
+> scripts/remove_job.sh isaac-sim-basic-example
+> ```
 
 This demo allows running arbitrary Isaac Sim scripts on Omniverse Farm by downloading the necessary files, executing the specified command, and then uploading the output files to Nucleus.
 
@@ -279,11 +279,11 @@ scripts/submit_task.sh isaac-sim-nucleus-example \
   "Isaac Sim Cube Fall"
 ```
 
-You can remove the job definition file after the job has finished:
-
-```sh
-scripts/remove_job.sh isaac-sim-nucleus-example
-```
+> Optionally, you can remove the job definition file after the job has finished:
+> 
+> ```sh
+> scripts/remove_job.sh isaac-sim-nucleus-example
+> ```
 
 ### Setting Persistent Volumes
 
@@ -320,15 +320,19 @@ scripts/submit_task.sh isaac-sim-volume-example \
   "Isaac Sim Cube Fall"
 ```
 
-You can remove the job definition file after the job has finished:
-
-```sh
-scripts/remove_job.sh isaac-sim-volume-example
-```
+> Optionally, you can remove the job definition file after the job has finished:
+> 
+> ```sh
+> scripts/remove_job.sh isaac-sim-volume-example
+> ```
 
 Note that you can remove the `--download-src` and `--download-dest` options if the script is stored in the persistent volume. In addition, the `cp` command here is only for demonstration purposes, the best practice is to directly write the results in the persistent volume. This can be achieved by making the script accept an additional argument for the output directory.
 
 > If your job stuck in the `running` state and output no logs, you may have mounted an incorrect PVC. Double check the `README` file and example job description provided by the cluster admin.
+
+### Custom Job Definitions
+
+Based on the job definition files above, rename the `json` file with your username as prefix to prevent job name conflict. In addition, each of your job definition should correspond to a unique job type, and you should refrain from removing/overwriting job definitions with corresponding running tasks to prevent potential issues.
 
 > If you are not running Isaac tasks, you can skip the remaining sections.
 
@@ -365,11 +369,11 @@ scripts/submit_task.sh isaac-lab-volume-example \
   "Isaac Lab RL-Games Isaac-Ant-v0"
 ```
 
-You can remove the job definition file after the job has finished:
+> Optionally, you can remove the job definition file after the job has finished:
 
-```sh
-scripts/remove_job.sh isaac-lab-volume-example
-```
+> ```sh
+> scripts/remove_job.sh isaac-lab-volume-example
+> ```
 
 This demo allows running arbitrary built-in Isaac Lab scripts on Omniverse Farm.
 
