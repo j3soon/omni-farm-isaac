@@ -236,7 +236,7 @@ Then, submit the job:
 
 ```sh
 scripts/submit_task.sh isaac-sim-basic-example \
-"/run.sh \
+"bash /run.sh \
   --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Scripts/isaac-sim-simulation-example.py' \
   --download-dest '/src/isaac-sim-simulation-example.py' \
   --upload-src '/results/isaac-sim-simulation-example.txt' \
@@ -276,7 +276,7 @@ Then, submit the job:
 
 ```sh
 scripts/submit_task.sh isaac-sim-nucleus-example \
-"/run.sh \
+"bash /run.sh \
   --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Scripts/isaac-sim-simulation-example.py' \
   --download-dest '/src/isaac-sim-simulation-example.py' \
   --upload-src '/results/isaac-sim-simulation-example.txt' \
@@ -316,7 +316,7 @@ Then, submit the job:
 
 ```sh
 scripts/submit_task.sh isaac-sim-volume-example \
-"/run.sh \
+"bash /run.sh \
   --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Scripts/isaac-sim-simulation-example.py' \
   --download-dest '/src/isaac-sim-simulation-example.py' \
   'ls /mnt/nfs' \
@@ -383,7 +383,7 @@ Now that you have learned all the basics and successfully run Isaac Sim tasks, y
 5. Download and extract the dataset.
    ```sh
    scripts/submit_task.sh ${FARM_USER}-general-volume-example-1 \
-   "/run.sh \
+   "bash /run.sh \
      --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Data' \
      --download-dest '/mnt/nfs/$FARM_USER/data' \
      'ls /mnt/nfs/$FARM_USER/data/MNIST/raw' \
@@ -400,7 +400,7 @@ Now that you have learned all the basics and successfully run Isaac Sim tasks, y
 6. Submit the job.
    ```sh
    scripts/submit_task.sh ${FARM_USER}-general-volume-example-1 \
-   "/run.sh \
+   "bash /run.sh \
      --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Scripts/mnist' \
      --download-dest '/src/mnist' \
      --upload-src '/mnt/nfs/$FARM_USER/results/mnist/checkpoints' \
@@ -450,7 +450,7 @@ Then, submit the job:
 
 ```sh
 scripts/submit_task.sh isaac-lab-volume-example \
-"/run.sh \
+"bash /run.sh \
   --upload-src '/root/IsaacLab/logs' \
   --upload-dest 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Results/IsaacLab/logs' \
   'ls /mnt/nfs' \
