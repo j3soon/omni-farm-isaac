@@ -497,7 +497,7 @@ Job Submission:
 - The default time limit per task is 10 days. If the task takes longer than 10 days, the task will be terminated. You can modify the time limit by changing the `active_deadline_seconds` field in the job definition file.
 - In the examples, the number of requested GPUs per task is set to 1. You can modify the number of GPUs for different tasks by changing the `nvidia.com/gpu` field in the job definition file.
 - Sometimes, the CLI will hang after running the `submit_task.sh` script. Cancel the script by pressing `Ctrl+C` and rerun should resolve the issue.
-- If you are using custom shell scripts to trigger your tasks, make sure to include the `#!/bin/bash` shebang at the beginning of the script. Moreover, you may want to use `#!/bin/bash -e -x` when debugging.
+- If you are using custom shell scripts to trigger your tasks, make sure to include the `#!/bin/bash` shebang at the beginning of the script. Moreover, you may want to use `#!/bin/bash -ex` when debugging.
 - Consider resubmitting a task when unexpected behavior occurs. For example, tasks sometimes fail unexpectedly and can be simply fixed by resubmitting the task.
 
 Job States:
