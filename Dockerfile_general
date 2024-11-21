@@ -1,0 +1,4 @@
+FROM nvcr.io/nvidia/pytorch:23.12-py3
+
+COPY thirdparty/omnicli /omnicli
+COPY scripts/docker/run.sh /run.sh
