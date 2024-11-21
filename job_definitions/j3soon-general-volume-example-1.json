@@ -1,0 +1,41 @@
+{
+  "job_type": "base",
+  "command": "bash",
+  "args": ["-c"],
+  "job_spec_path": "null",
+  "capacity_requirements": {
+    "resource_limits": {
+      "nvidia.com/gpu": 1
+    },
+    "env_from": [
+      {
+        "secretRef": {
+          "name": "nucleus-secret"
+        }
+      }
+    ],
+    "volumes": [
+      {
+        "persistentVolumeClaim": {
+          "claimName": "nfs-pvc"
+        },
+        "name": "nfs"
+      }
+    ],
+    "volume_mounts": [
+      {
+        "mountPath": "/mnt/nfs",
+        "name": "nfs"
+      }
+    ],
+    "active_deadline_seconds": 864000
+  },
+  "container": "j3soon/omni-farm-general",
+  "allowed_args": {
+    "args": {
+      "arg": "",
+      "default": "echo hi",
+      "separator": ""
+    }
+  }
+}

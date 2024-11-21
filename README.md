@@ -221,7 +221,7 @@ Use [`omnicli`](https://docs.omniverse.nvidia.com/connect/latest/connect-sample.
 
 ```sh
 cd thirdparty/omnicli
-./omnicli copy "../../tasks/isaac-sim-simulation-example.py" "omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/4.1/Scripts/isaac-sim-simulation-example.py"
+./omnicli copy "../../tasks/isaac-sim-simulation-example.py" "omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Scripts/isaac-sim-simulation-example.py"
 cd ../..
 ```
 
@@ -237,10 +237,10 @@ Then, submit the job:
 ```sh
 scripts/submit_task.sh isaac-sim-basic-example \
 "/run.sh \
-  --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/4.1/Scripts/isaac-sim-simulation-example.py' \
+  --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Scripts/isaac-sim-simulation-example.py' \
   --download-dest '/src/isaac-sim-simulation-example.py' \
   --upload-src '/results/isaac-sim-simulation-example.txt' \
-  --upload-dest 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/4.1/Results/isaac-sim-simulation-example.txt' \
+  --upload-dest 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Results/isaac-sim-simulation-example.txt' \
   './python.sh -u /src/isaac-sim-simulation-example.py 10'" \
   "Isaac Sim Cube Fall"
 ```
@@ -261,7 +261,7 @@ Use [`omnicli`](https://docs.omniverse.nvidia.com/connect/latest/connect-sample.
 
 ```sh
 cd thirdparty/omnicli
-./omnicli copy "../../tasks/isaac-sim-simulation-example.py" "omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/4.1/Scripts/isaac-sim-simulation-example.py"
+./omnicli copy "../../tasks/isaac-sim-simulation-example.py" "omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Scripts/isaac-sim-simulation-example.py"
 cd ../..
 ```
 
@@ -277,10 +277,10 @@ Then, submit the job:
 ```sh
 scripts/submit_task.sh isaac-sim-nucleus-example \
 "/run.sh \
-  --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/4.1/Scripts/isaac-sim-simulation-example.py' \
+  --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Scripts/isaac-sim-simulation-example.py' \
   --download-dest '/src/isaac-sim-simulation-example.py' \
   --upload-src '/results/isaac-sim-simulation-example.txt' \
-  --upload-dest 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/4.1/Results/isaac-sim-simulation-example.txt' \
+  --upload-dest 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Results/isaac-sim-simulation-example.txt' \
   './python.sh -u /src/isaac-sim-simulation-example.py 10'" \
   "Isaac Sim Cube Fall"
 ```
@@ -301,7 +301,7 @@ Use [`omnicli`](https://docs.omniverse.nvidia.com/connect/latest/connect-sample.
 
 ```sh
 cd thirdparty/omnicli
-./omnicli copy "../../tasks/isaac-sim-simulation-example.py" "omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/4.1/Scripts/isaac-sim-simulation-example.py"
+./omnicli copy "../../tasks/isaac-sim-simulation-example.py" "omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Scripts/isaac-sim-simulation-example.py"
 cd ../..
 ```
 
@@ -317,7 +317,7 @@ Then, submit the job:
 ```sh
 scripts/submit_task.sh isaac-sim-volume-example \
 "/run.sh \
-  --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/4.1/Scripts/isaac-sim-simulation-example.py' \
+  --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Scripts/isaac-sim-simulation-example.py' \
   --download-dest '/src/isaac-sim-simulation-example.py' \
   'ls /mnt/nfs' \
   'mkdir -p /mnt/nfs/results' \
@@ -336,11 +336,98 @@ Note that you can remove the `--download-src` and `--download-dest` options if t
 
 > If your job stuck in the `running` state and output no logs, you may have mounted an incorrect PVC. Double check the `README` file and example job description provided by the cluster admin.
 
-### Custom Job Definitions
+## Running General Tasks
 
-Based on the job definition files above, rename the `json` file with your username as prefix to prevent job name conflict. In addition, each of your job definition should correspond to a unique job type, and you should refrain from removing/overwriting job definitions with corresponding running tasks to prevent potential issues.
+Now that you have learned all the basics and successfully run Isaac Sim tasks, you may want to run general tasks that are not specific to Isaac Sim or Isaac Lab such as training models or pre/postprocessing data. The following takes the PyTorch MNIST training code as an example to achieve this.
 
-> If you are not running Isaac tasks, you can skip the remaining sections.
+1. Prepare your custom code and data.
+   ```sh
+   # Download code
+   git clone https://github.com/pytorch/examples.git
+   sed -i 's/download=True/download=False/g' examples/mnist/main.py
+   sed -i 's/mnist_cnn\.pt/checkpoints\/mnist_cnn\.pt/g' examples/mnist/main.py
+   # Download data
+   # Ref: https://github.com/pytorch/vision/blob/main/torchvision/datasets/mnist.py
+   mkdir -p examples/data/MNIST/raw && cd examples/data/MNIST/raw
+   wget https://ossci-datasets.s3.amazonaws.com/mnist/train-images-idx3-ubyte.gz
+   wget https://ossci-datasets.s3.amazonaws.com/mnist/train-labels-idx1-ubyte.gz
+   wget https://ossci-datasets.s3.amazonaws.com/mnist/t10k-images-idx3-ubyte.gz
+   wget https://ossci-datasets.s3.amazonaws.com/mnist/t10k-labels-idx1-ubyte.gz
+   cd ../../../../
+   ```
+2. Build a custom Docker image with the necessary dependencies and scripts for your tasks and [upload it to Docker Hub](https://docs.docker.com/get-started/workshop/04_sharing_app/).
+   ```sh
+   docker build -t j3soon/omni-farm-isaac-general -f Dockerfile_general .
+   docker push j3soon/omni-farm-isaac-general
+   ```
+   In this example, dependencies are not installed in the Dockerfile. However, in practice, you will want to select a suitable base image and pre-install all dependencies in the Dockerfile such as `pip install -r requirements.txt` to prevent the need of installing dependencies every time after launching a container. You may also want to delete the `.dockerignore` file. If your code will not be modified, you can also directly copy the code to your Docker image. However, this is usually not the case, as you often want to update your code without rebuilding the Docker image.
+3. Upload your dataset and code to Nucleus server.
+   ```
+   cd thirdparty/omnicli
+   # copy dataset
+   ./omnicli delete "omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Data"
+   ./omnicli copy "../../examples/data" "omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Data"
+   # copy code
+   ./omnicli delete "omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Scripts/mnist"
+   ./omnicli copy "../../examples/mnist" "omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Scripts/mnist"
+   cd ../..
+   ```
+   When uploading a newer version of your code or dataset, always delete the existing directory first. This ensures that any files removed in the new version are not left behind, as the `omnicli copy` command does not automatically delete outdated files. If you expect you will run a newer version of your code while previous tasks are still running, consider implementing a versioning system by including a version tag in the file path to prevent conflict.
+4. Create and save a job definition file that refers to the custom Docker image.  
+   Based on the job definition files above, rename the `json` file with your username as prefix, and number of GPUs as suffix, to prevent job name conflict. In addition, each of your job definition should correspond to a unique job type, and you should refrain from removing/overwriting job definitions with corresponding running tasks to prevent potential issues. Here we use the `j3soon-general-volume-example-1.json` job description copied from `isaac-sim-volume-example.json` as an example.
+   ```sh
+   scripts/save_job.sh ${FARM_USER}-general-volume-example-1
+   scripts/load_job.sh
+   ```
+   > If you have changed the mounted PVC name in the previous section, make sure to update the `nfs-pvc` fields in the job description file accordingly.
+5. Download and extract the dataset.
+   ```sh
+   scripts/submit_task.sh ${FARM_USER}-general-volume-example-1 \
+   "/run.sh \
+     --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Data' \
+     --download-dest '/mnt/nfs/$FARM_USER/data' \
+     'ls /mnt/nfs/$FARM_USER/data/MNIST/raw' \
+     'cd /mnt/nfs/$FARM_USER/data/MNIST/raw' \
+     'gzip -dk train-images-idx3-ubyte.gz' \
+     'gzip -dk train-labels-idx1-ubyte.gz' \
+     'gzip -dk t10k-images-idx3-ubyte.gz' \
+     'gzip -dk t10k-labels-idx1-ubyte.gz' \
+     'ls /mnt/nfs/$FARM_USER/data/MNIST/raw' \
+     'echo done'" \
+   "PyTorch MNIST Data Preparation"
+   ```
+   Although `/mnt/nfs` is a Network File System (NFS) mounted volume, it typically isn't the bottleneck during training. However, if you notice that your dataloader is causing performance issues, consider copying the dataset to the container's local storage before starting the training process. The NFS volume may also cause issues if you are using `tar` on the mounted volume, see [the FAQ section](#faq) for more details.
+6. Submit the job.
+   ```sh
+   scripts/submit_task.sh ${FARM_USER}-general-volume-example-1 \
+   "/run.sh \
+     --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Scripts/mnist' \
+     --download-dest '/src/mnist' \
+     --upload-src '/mnt/nfs/$FARM_USER/results/mnist/checkpoints' \
+     --upload-dest 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Results/mnist/checkpoints' \
+     'apt-get update' \
+     'apt-get install -y tree' \
+     'tree /mnt/nfs/$FARM_USER/data' \
+     'ln -s /mnt/nfs/$FARM_USER/data /src/data' \
+     'ls -al /src/data' \
+     'mkdir -p /mnt/nfs/$FARM_USER/results/mnist/checkpoints' \
+     'ln -s /mnt/nfs/$FARM_USER/results/mnist/checkpoints /src/mnist/checkpoints' \
+     'ls -al /src/mnist/checkpoints' \
+     'cd /src/mnist' \
+     'python -u -m pip install -r requirements.txt' \
+     'python -u main.py --save-model --epochs 1'" \
+   "PyTorch MNIST Training"
+   ```
+   The `apt-get install` and `pip install` commands here are only for demonstration purposes, installing packages during runtime is not recommended, as it can slow down the task and potentially cause issues. It is recommended to include all dependencies in the Docker image by specifying them in the Dockerfile.
+7. Download the results.
+   ```
+   cd thirdparty/omnicli
+   # download results
+   ./omnicli copy "omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Results" "../../Results"
+   cd ../..
+   ```
+
+> If you are not running Isaac Lab tasks, you can skip the remaining sections. However, you may want to take a look at the [FAQ section](#faq) for potential issues that may arise during submitting your tasks. If you encounter any issues, first search this document to see if it's addressed in the FAQ. If not, reach out to the cluster administrator for assistance.
 
 ## Running Isaac Lab Tasks
 
@@ -365,7 +452,7 @@ Then, submit the job:
 scripts/submit_task.sh isaac-lab-volume-example \
 "/run.sh \
   --upload-src '/root/IsaacLab/logs' \
-  --upload-dest 'omniverse://$NUCLEUS_HOSTNAME/Projects/J3soon/Isaac/4.1/Results/IsaacLab/logs' \
+  --upload-dest 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Results/IsaacLab/logs' \
   'ls /mnt/nfs' \
   'mkdir -p /mnt/nfs/results/IsaacLab/logs' \
   'ln -s /mnt/nfs/results/IsaacLab/logs logs' \
@@ -391,38 +478,65 @@ If your task requires a GUI during development, see [this guide](https://github.
 
 Refer to [scripts/docker](scripts/docker) for potential useful scripts for running Isaac Sim tasks locally.
 
+## FAQ
+
+Nucleus:
+- When using `omnicli`, sometimes the following error occurs:
+  ```
+  Error: no DISPLAY environment variable specified
+  ```
+  which can be fixed by running the `omnicli` command in a terminal with desktop support, and enter username and password through the browser.
+
+Job Submission:
+- Saving an updated job definition (`scripts/save_job.sh`) and submitting a task that refers to that job definition (`scripts/submit_task.sh`) doesn't seem to be always in sync. Please submit some dummy tasks to verify that the job definition changes are reflected in new tasks before submitting the actual task. While this issue doesn't happen frequently, avoid reusing job definitions across different tasks to minimize potential issues.
+- The default time limit per task is 10 days. If the task takes longer than 10 days, the task will be terminated. You can modify the time limit by changing the `active_deadline_seconds` field in the job definition file.
+- In the examples, the number of requested GPUs per task is set to 1. You can modify the number of GPUs for different tasks by changing the `nvidia.com/gpu` field in the job definition file.
+
+Job States:
+- If a task refers to a job definition that doesn't exist, the task will be stuck in the `submitted` state.
+- If a task refers to a docker image or a PVC that doesn't exist, the task will be stuck in the `running` state.
+  ```sh
+  No logs found for task xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx on agent None: 'No logs found for Task xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.'
+  ```
+  Note that the docker image must be on a public registry such as Docker Hub. For example, the `j3soon/omni-farm-general` image is [a public image on Docker Hub](https://hub.docker.com/repository/docker/j3soon/omni-farm-general).
+- When using Omniverse Isaac Gym Envs with SKRL and Ray Tune, the task will sometimes complete but stuck in the `running` state.
+
+Job Logs:
+- When using `tar` on a mounted volume, make sure to use the `--no-same-owner` flag to prevent the following error:
+  ```
+  tar: XXX: Cannot change ownership to uid XXX, gid XXX: Operation not permitted
+  ```
+- When copying a script to Nucleus using omnicli and downloading it to the container, the script's permissions are reset. As a result, a script that was originally executable will no longer have execute permissions. To avoid this issue, instead of running the script directly, use `bash test.sh` to run it instead of `./test.sh`. This will prevent the following error:
+  ```
+  bash: ./test.sh: Permission denied
+  Process exited with return code: -1
+  ```
+  Alternatively, you can set the permissions of the script in the container by running `chmod +x test.sh` before running the script.
+- Omniverse Farm webpage logs show the following error when using custom built docker image:
+  ```sh
+
+  #### Agent ID: controller-0.controller.ov-farm.svc.cluster.local-1
+  /bin/bash: - : invalid option
+  Process exited with return code: -1
+  ```
+  This may be due to building on Windows, try buliding your Docker image in a Linux environment instead.
+- If you notice that the logs are repeated twice when your task fails (non-zero return code), it's because Omniverse Farm automatically retries the job if it fails. To prevent this, you can cancel the job manually.
+
 ## Developer Notes
 
 - The job definitions used above contains minimal configuration. You can include more configuration options by referring to the [Job Definition Docs](https://docs.omniverse.nvidia.com/farm/latest/guides/creating_job_definitions.html) and the [Farm Examples](https://docs.omniverse.nvidia.com/farm/latest/farm_examples.html).
 - The sample job definition files and the `scripts/save_job.sh` script only allows the use of a single argument `args`. You need to modify the job definition file and script to include more arguments if necessary.
-- Saving an updated job definition (`scripts/save_job.sh`) and submitting a task that refers to that job definition (`scripts/submit_task.sh`) doesn't seem to be always in sync. Please submit some dummy tasks to verify that the job definition changes are reflected in new tasks before submitting the actual task.
 - The default time limit (`active_deadline_seconds`) for K8s pods are set to `86400` (1 day) by Omniverse Farm. If the task takes longer than 1 day, the task will be terminated. After the K8s pod has been terminated, the K8s job will restart it once (`backoffLimit: 1`) even though `is_retryable` is set to False. This restarted K8s pod cannot be cancelled through the Omniverse UI. You can modify the time limit by changing the `active_deadline_seconds` field in the job definition file, we set it to 10 days in all job definitions, which is enough for most tasks.
 - The behavior of K8s jobs restarting K8s pods (`backoffLimit: 1`) after K8s pod termination appear to happen when the command exits with a non-zero status code. This issue can be observed by running the following:
   ```sh
   kubectl get jobs -n ov-farm -o yaml | grep backoffLimit
   ```
   - The default backoff limit of the Omniverse Farm is set to 1. Originally, I thought this could be fixed by overriding the K8s job template during Omniverse Farm pre-installation, as described [here](https://docs.omniverse.nvidia.com/farm/latest/deployments/kubernetes.html#step-2). However, after some trial and error with [@timost1234](https://github.com/timost1234), it seems that we cannot change this value. Since the `cm/controller-job-template-spec-overrides` ConfigMap doesn't seem to allow changing the `backoffLimit` field.
-- In the examples, the number of requested GPUs per task is set to 1. You can modify the number of GPUs for different tasks by changing the `nvidia.com/gpu` field in the job definition file.
 - The `job_spec_path` is required for options such as `args` and `env` to be saved. If the `job_spec_path` is `null`, these options will be forced empty. In our examples, we simply set it to a dummy value (`"null"`). See [this thread](https://nvidia.slack.com/archives/C03AZDA710T/p1689869120574269) for more details.
 - If relative paths are not setup correctly, the task might fail due to the behavior of automatically prepending the path with the current working directory (`/isaac-sim`). This behavior may result in errors such as:
   ```
   /isaac-sim/kit/python/bin/python3: can't open file '/isaac-sim/ ': [Errno 2] No such file or directory`.
   ```
-- If a task refers to a job definition that doesn't exist, the task will be stuck in the `submitted` state.
-- If a task refers to a docker image or a PVC that doesn't exist, the task will be stuck in the `running` state.
-  ```sh
-  No logs found for task xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx on agent None: 'No logs found for Task xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.'
-  ```
-- When using `tar` on a mounted volume, make sure to use the `--no-same-owner` flag to prevent the following error:
-  ```
-  tar: XXX: Cannot change ownership to uid XXX, gid XXX: Operation not permitted
-  ```
-- When using Omniverse Isaac Gym Envs with SKRL and Ray Tune, the task will sometimes complete but stuck in the `running` state.
-- When using `omnicli`, sometimes the following error occurs:
-  ```
-  Error: no DISPLAY environment variable specified
-  ```
-  which can be fixed by running the `omnicli` command in a terminal with desktop support, and enter username and password through the browser.
 - If the following error occurs in the Omniverse Farm UI:
   ```
   Error: Connection
@@ -437,15 +551,6 @@ Refer to [scripts/docker](scripts/docker) for potential useful scripts for runni
   ping <NUCLEUS_HOSTNAME>
   # check that the Nucleus server is reachable
   ```
-- Omniverse Farm webpage logs show the following error when using custom built docker image:
-  ```sh
-
-  #### Agent ID: controller-0.controller.ov-farm.svc.cluster.local-1
-  /bin/bash: - : invalid option
-  Process exited with return code: -1
-  ```
-
-  This may be due to building on Windows, try a Linux environment instead.
 
 ## References
 
