@@ -1,3 +1,8 @@
 FROM nvcr.io/nvidia/isaac-sim:2023.1.1
+
+# Tools and scripts for Omniverse Farm
 COPY thirdparty/omnicli /omnicli
 COPY scripts/docker/run.sh /run.sh
+
+# Prevent users from accidentally removing the executable permission.
+RUN chmod +x /omnicli/omnicli && chmod +x /run.sh
