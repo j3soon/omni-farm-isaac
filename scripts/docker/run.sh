@@ -63,9 +63,13 @@ fi
 
 if [ -n "$DOWNLOAD_SRC" ] || [ -n "$DOWNLOAD_DEST" ]; then
   if [ -e "$DOWNLOAD_DEST" ]; then
-    echo "File exists at '$DOWNLOAD_DEST', deleting..."
-    rm -rf "$DOWNLOAD_DEST/*"
-    rm -rf "$DOWNLOAD_DEST/.*"
+    if [ -d "$DOWNLOAD_DEST" ]; then
+      echo "Directory exists at '$DOWNLOAD_DEST', deleting contents..."
+      rm -rf "$DOWNLOAD_DEST"/{*,.*} || true
+    else
+      echo "File exists at '$DOWNLOAD_DEST', deleting..."
+      rm -f "$DOWNLOAD_DEST"
+    fi
   fi
   echo "Copying files from '$DOWNLOAD_SRC' to '$DOWNLOAD_DEST'..."
   ( cd /omnicli && ./omnicli copy "$DOWNLOAD_SRC" "$DOWNLOAD_DEST" )
