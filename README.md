@@ -486,6 +486,11 @@ Nucleus:
   Error: no DISPLAY environment variable specified
   ```
   which can be fixed by running the `omnicli` command in a terminal with desktop support, and enter username and password through the browser.
+- When running `./omnicli`, make sure it has executable permission to prevent the following error:
+  ```
+  bash: ./omnicli: Permission denied
+  ```
+  If it somehow loses its executable permission, you can run `chmod +x thirdparty/omnicli/omnicli` to restore it.
 
 Job Submission:
 - Saving an updated job definition (`scripts/save_job.sh`) and submitting a task that refers to that job definition (`scripts/submit_task.sh`) doesn't seem to be always in sync. Please submit some dummy tasks to verify that the job definition changes are reflected in new tasks before submitting the actual task. While this issue doesn't happen frequently, avoid reusing job definitions across different tasks to minimize potential issues.
