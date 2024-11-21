@@ -255,7 +255,7 @@ This demo allows running arbitrary Isaac Sim scripts on Omniverse Farm by downlo
 
 ### Setting Nucleus Credentials
 
-If your Nucleus server have a non-default username and password. Use `./omnicli auth [username] [password]` to enter your credentials for uploading files. Alternatively, you can use Omniverse Launcher to perform authentication through a GUI. In addition, use the `isaac-sim-nucleus-example.json` job description instead to include your username and password. The job description assumes `nucleus-secret` has been added to the K8s secrets by the admin, including `OMNI_USER` and `OMNI_PASS`. Alternatively, if security is not a concern, you may include the username and password directly through the `env` entry in the job descriptions.
+If your Nucleus server have a non-default username and password. Use `./omnicli auth [username] [password]` to enter your credentials for uploading files. Alternatively, you can use Omniverse Launcher to perform authentication through a GUI. In addition, use the `isaac-sim-nucleus-example.json` job definition instead to include your username and password. The job definition assumes `nucleus-secret` has been added to the K8s secrets by the admin, including `OMNI_USER` and `OMNI_PASS`. Alternatively, if security is not a concern, you may include the username and password directly through the `env` entry in the job definitions.
 
 Use [`omnicli`](https://docs.omniverse.nvidia.com/connect/latest/connect-sample.html#omni-cli) to upload the script to Nucleus:
 
@@ -293,7 +293,7 @@ scripts/submit_task.sh isaac-sim-nucleus-example \
 
 ### Setting Persistent Volumes
 
-The aforementioned methods only upload the results after the specified command runs successfully, potentially resulting in loss of results if the command fails. To prevent this, you can mount a persistent volume to the container. The `isaac-sim-volume-example.json` job description assumes that `nfs-pv` connecting to a storage server through NFS has been added to K8s persistent volume (PV), along with a corresponding `nfs-pvc` persistent volume claim (PVC) by the admin. This method allows you to keep the partial results even if the command fails.
+The aforementioned methods only upload the results after the specified command runs successfully, potentially resulting in loss of results if the command fails. To prevent this, you can mount a persistent volume to the container. The `isaac-sim-volume-example.json` job definition assumes that `nfs-pv` connecting to a storage server through NFS has been added to K8s persistent volume (PV), along with a corresponding `nfs-pvc` persistent volume claim (PVC) by the admin. This method allows you to keep the partial results even if the command fails.
 
 > This NFS setup is preferable for multiple nodes over using [`volumeMounts.mountPath`](https://kubernetes.io/docs/concepts/storage/volumes/#hostpath-configuration-example). The latter mounts the volume to the node where the pod is running, which can become challenging to manage in clusters with multiple nodes.
 
@@ -334,7 +334,7 @@ scripts/submit_task.sh isaac-sim-volume-example \
 
 Note that you can remove the `--download-src` and `--download-dest` options if the script is stored in the persistent volume. In addition, the `cp` command here is only for demonstration purposes, the best practice is to directly write the results in the persistent volume. This can be achieved by making the script accept an additional argument for the output directory.
 
-> If your job stuck in the `running` state and output no logs, you may have mounted an incorrect PVC. Double check the `README` file and example job description provided by the cluster admin.
+> If your job stuck in the `running` state and output no logs, you may have mounted an incorrect PVC. Double check the `README` file and example job definition provided by the cluster admin.
 
 ## Running General Tasks
 
@@ -374,12 +374,12 @@ Now that you have learned all the basics and successfully run Isaac Sim tasks, y
    ```
    When uploading a newer version of your code or dataset, always delete the existing directory first. This ensures that any files removed in the new version are not left behind, as the `omnicli copy` command does not automatically delete outdated files. If you expect you will run a newer version of your code while previous tasks are still running, consider implementing a versioning system by including a version tag in the file path to prevent conflict.
 4. Create and save a job definition file that refers to the custom Docker image.  
-   Based on the job definition files above, rename the `json` file with your username as prefix, and number of GPUs as suffix, to prevent job name conflict. In addition, each of your job definition should correspond to a unique job type, and you should refrain from removing/overwriting job definitions with corresponding running tasks to prevent potential issues. Here we use the `j3soon-general-volume-example-1.json` job description copied from `isaac-sim-volume-example.json` as an example.
+   Based on the job definition files above, rename the `json` file with your username as prefix, and number of GPUs as suffix, to prevent job name conflict. In addition, each of your job definition should correspond to a unique job type, and you should refrain from removing/overwriting job definitions with corresponding running tasks to prevent potential issues. Here we use the `j3soon-general-volume-example-1.json` job definition copied from `isaac-sim-volume-example.json` as an example.
    ```sh
    scripts/save_job.sh ${FARM_USER}-general-volume-example-1
    scripts/load_job.sh
    ```
-   > If you have changed the mounted PVC name in the previous section, make sure to update the `nfs-pvc` fields in the job description file accordingly.
+   > If you have changed the mounted PVC name in the previous section, make sure to update the `nfs-pvc` fields in the job definition file accordingly.
 5. Download and extract the dataset.
    ```sh
    scripts/submit_task.sh ${FARM_USER}-general-volume-example-1 \
