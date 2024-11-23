@@ -507,6 +507,7 @@ Job States:
   No logs found for task xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx on agent None: 'No logs found for Task xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.'
   ```
   Note that the docker image must be on a public registry such as Docker Hub. For example, the `j3soon/omni-farm-general` image is [a public image on Docker Hub](https://hub.docker.com/repository/docker/j3soon/omni-farm-general).
+- If a task requests more GPUs than available, the task will be stuck in the `running` state.
 - When using Omniverse Isaac Gym Envs with SKRL and Ray Tune, the task will sometimes complete but stuck in the `running` state.
 
 Job Logs:
