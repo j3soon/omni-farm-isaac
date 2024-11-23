@@ -3,7 +3,27 @@
   "command": "echo",
   "job_spec_path": "null",
   "capacity_requirements": {
-    "active_deadline_seconds": 864000
+    "active_deadline_seconds": 864000,
+    "affinity": {
+      "podAffinity": {
+        "preferredDuringSchedulingIgnoredDuringExecution": [
+          {
+            "weight": 1,
+            "podAffinityTerm": {
+              "labelSelector": {
+                "matchExpressions": [
+                  {
+                    "key": "ov-farm",
+                    "operator": "Exists"
+                  }
+                ]
+              },
+              "topologyKey": "kubernetes.io/hostname"
+            }
+          }
+        ]
+      }
+    }
   },
   "container": "ubuntu:latest",
   "allowed_args": {

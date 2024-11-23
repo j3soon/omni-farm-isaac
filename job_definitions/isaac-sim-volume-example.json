@@ -28,7 +28,27 @@
         "name": "nfs"
       }
     ],
-    "active_deadline_seconds": 864000
+    "active_deadline_seconds": 864000,
+    "affinity": {
+      "podAffinity": {
+        "preferredDuringSchedulingIgnoredDuringExecution": [
+          {
+            "weight": 1,
+            "podAffinityTerm": {
+              "labelSelector": {
+                "matchExpressions": [
+                  {
+                    "key": "ov-farm",
+                    "operator": "Exists"
+                  }
+                ]
+              },
+              "topologyKey": "kubernetes.io/hostname"
+            }
+          }
+        ]
+      }
+    }
   },
   "container": "j3soon/omni-farm-isaac-sim:4.1.0",
   "allowed_args": {
