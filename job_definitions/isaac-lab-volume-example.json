@@ -48,7 +48,8 @@
           }
         ]
       }
-    }
+    },
+    "hostIPC": true
   },
   "container": "j3soon/omni-farm-isaaclab:latest",
   "allowed_args": {

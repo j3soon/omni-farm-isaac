@@ -23,7 +23,8 @@
           }
         ]
       }
-    }
+    },
+    "hostIPC": true
   },
   "container": "ubuntu:latest",
   "allowed_args": {

@@ -529,11 +529,14 @@ Job Logs:
   Process exited with return code: -1
   ```
   This may be due to building on Windows, try buliding your Docker image in a Linux environment instead.
-- Consider increasing the max number of open files by `ulimit -n 524288` to prevent the following errors:
+- If you notice that the logs are repeated twice when your task fails (non-zero return code), it's because Omniverse Farm automatically retries the job if it fails. To prevent this, you can cancel the job manually.
+
+Ulimit:
+- (ulimit open files) Consider increasing the max number of open files by `ulimit -n 524288` to prevent the following errors:
   ```
   OSError: [Errno 24] Too many open files: 'XXX'
   ```
-- If you notice that the logs are repeated twice when your task fails (non-zero return code), it's because Omniverse Farm automatically retries the job if it fails. To prevent this, you can cancel the job manually.
+- (ulimit stack size) Set `ulimit -s unlimited`.
 
 ## Developer Notes
 

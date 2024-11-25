@@ -48,7 +48,8 @@
           }
         ]
       }
-    }
+    },
+    "hostIPC": true
   },
   "container": "j3soon/omni-farm-general",
   "allowed_args": {
