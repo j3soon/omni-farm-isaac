@@ -148,6 +148,8 @@ scripts/vpn/uninstall_config.sh
 
 These 4 scripts are just wrappers for the `openvpn3` command line tool. See the [official documentation](https://community.openvpn.net/openvpn/wiki/OpenVPN3Linux) for more details.
 
+If you need to connect multiple machines to the VPN simultaneously, avoid using the same VPN profile. Doing so may cause one machine to disconnect when another connects. Consider asking the cluster admin to generate separate VPN profiles for each of your machine.
+
 > If a previous config is already installed, you must uninstall it before installing a new one. Otherwise, the scripts will create two VPN profiles with the same name, which can only be fixed by using the `openvpn3` command line tool directly. Specifically, use the following commands:
 >
 > ```sh
@@ -426,6 +428,7 @@ Now that you have learned all the basics and successfully run Isaac Sim tasks, y
    ./omnicli copy "omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Results" "../../Results"
    cd ../..
    ```
+   When working with large files, compressing them before uploading/downloading is often more efficient, as handling many smaller files can slow down file transfer processes.
 
 > If you are not running Isaac Lab tasks, you can skip the remaining sections. However, you may want to take a look at the [FAQ section](#faq) for potential issues that may arise during submitting your tasks. If you encounter any issues, first search this document to see if it's addressed in the FAQ. If not, reach out to the cluster administrator for assistance.
 
