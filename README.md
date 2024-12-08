@@ -569,6 +569,7 @@ Ulimit:
   apt-get update && apt-get install -y iputils-ping
   ping <NUCLEUS_HOSTNAME>
   # check that the Nucleus server is reachable
+  # in addition, you can also run `omnicli` commands to confirm the issue
   ```
 
 ## References
