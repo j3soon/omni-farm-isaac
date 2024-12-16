@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 
 show_help() {
   echo -e "\nUsage: $0 [OPTIONS] <commands>\n"
