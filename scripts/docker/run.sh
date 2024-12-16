@@ -61,15 +61,25 @@ if [ "$#" -lt 1 ]; then
   exit 1
 fi
 
+echo "Setting ulimit to hard limit for open files and stack size..."
 echo "Current ulimit:"
 ulimit -a
 echo "Current hard ulimit:"
 ulimit -Ha
-echo "Setting ulimit to hard limit for open files and stack size..."
 ulimit -n $(ulimit -Hn)
 ulimit -s $(ulimit -Hs)
 echo "Current ulimit:"
 ulimit -a
+
+echo "Proactively set Google DNS to prevent potential internet connectivity issues..."
+# Idempotently add Google DNS to /etc/resolv.conf
+RESOLV_CONF="/etc/resolv.conf"
+for ns in "8.8.8.8" "8.8.4.4"; do
+  if ! grep -q "^nameserver $ns$" "$RESOLV_CONF"; then
+    echo "DNS $ns not found in $RESOLV_CONF, adding..."
+    echo "nameserver $ns" >> "$RESOLV_CONF"
+  fi
+done
 
 if [ -n "$DOWNLOAD_SRC" ] || [ -n "$DOWNLOAD_DEST" ]; then
   if [ -e "$DOWNLOAD_DEST" ]; then
