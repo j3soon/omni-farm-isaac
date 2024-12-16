@@ -495,7 +495,7 @@ Nucleus:
   ```
   If it somehow loses its executable permission, you can run `chmod +x thirdparty/omnicli/omnicli` to restore it.
 
-Job Submission:
+Task Submission:
 - Saving an updated job definition (`scripts/save_job.sh`) and submitting a task that refers to that job definition (`scripts/submit_task.sh`) doesn't seem to be always in sync. Please submit some dummy tasks to verify that the job definition changes are reflected in new tasks before submitting the actual task. While this issue doesn't happen frequently, avoid reusing job definitions across different tasks to minimize potential issues.
 - The default time limit per task is 10 days. If the task takes longer than 10 days, the task will be terminated. You can modify the time limit by changing the `active_deadline_seconds` field in the job definition file.
 - In the examples, the number of requested GPUs per task is set to 1. You can modify the number of GPUs for different tasks by changing the `nvidia.com/gpu` field in the job definition file.
@@ -503,7 +503,7 @@ Job Submission:
 - If you are using custom shell scripts to trigger your tasks, make sure to include the `#!/bin/bash` shebang at the beginning of the script. Moreover, you may want to use `#!/bin/bash -ex` when debugging.
 - Consider resubmitting a task when unexpected behavior occurs. For example, tasks sometimes fail unexpectedly and can be simply fixed by resubmitting the task.
 
-Job States:
+Task States:
 - If a task refers to a job definition that doesn't exist, the task will be stuck in the `submitted` state.
 - If a task refers to a docker image or a PVC that doesn't exist, the task will be stuck in the `running` state.
   ```sh
@@ -512,8 +512,9 @@ Job States:
   Note that the docker image must be on a public registry such as Docker Hub. For example, the `j3soon/omni-farm-general` image is [a public image on Docker Hub](https://hub.docker.com/repository/docker/j3soon/omni-farm-general).
 - If a task requests more GPUs than available, the task will be stuck in the `running` state.
 - When using Omniverse Isaac Gym Envs with SKRL and Ray Tune, the task will sometimes complete but stuck in the `running` state.
+- You can confirm the task is actually _running_ only when you see the log outputs (aside from the `No logs found` message).
 
-Job Logs:
+Task Logs:
 - When using `tar` on a mounted volume, make sure to use the `--no-same-owner` flag to prevent the following error:
   ```
   tar: XXX: Cannot change ownership to uid XXX, gid XXX: Operation not permitted
@@ -532,7 +533,7 @@ Job Logs:
   Process exited with return code: -1
   ```
   This may be due to building on Windows, try buliding your Docker image in a Linux environment instead.
-- If you notice that the logs are repeated twice when your task fails (non-zero return code), it's because Omniverse Farm automatically retries the job if it fails. To prevent this, you can cancel the job manually.
+- If you notice that the logs are repeated twice when your task fails (non-zero return code), it's because Omniverse Farm automatically retries the job if it fails. To prevent this, you can cancel the task manually.
 
 Ulimit:
 - (ulimit open files) Consider increasing the max number of open files by `ulimit -n 524288` to prevent the following errors:
@@ -546,6 +547,7 @@ Ulimit:
 - The job definitions used above contains minimal configuration. You can include more configuration options by referring to the [Job Definition Docs](https://docs.omniverse.nvidia.com/farm/latest/guides/creating_job_definitions.html) and the [Farm Examples](https://docs.omniverse.nvidia.com/farm/latest/farm_examples.html).
 - The sample job definition files and the `scripts/save_job.sh` script only allows the use of a single argument `args`. You need to modify the job definition file and script to include more arguments if necessary.
 - The default time limit (`active_deadline_seconds`) for K8s pods are set to `86400` (1 day) by Omniverse Farm. If the task takes longer than 1 day, the task will be terminated. After the K8s pod has been terminated, the K8s job will restart it once (`backoffLimit: 1`) even though `is_retryable` is set to False. This restarted K8s pod cannot be cancelled through the Omniverse UI. You can modify the time limit by changing the `active_deadline_seconds` field in the job definition file, we set it to 10 days in all job definitions, which is enough for most tasks.
+- The K8s node that the task will run on can be specified by `node_name` under `capacity_requirements` in the job definition file. This is useful when you want to run a task on a specific node to debug node-specific issues.
 - The behavior of K8s jobs restarting K8s pods (`backoffLimit: 1`) after K8s pod termination appear to happen when the command exits with a non-zero status code. This issue can be observed by running the following:
   ```sh
   kubectl get jobs -n ov-farm -o yaml | grep backoffLimit
