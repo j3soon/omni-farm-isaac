@@ -566,6 +566,10 @@ Task Logs:
   # in addition, you can also run `omnicli` commands to confirm the issue
   ```
 
+## Acknowledgements
+
+I must thank [Kuan-Ting Yeh](https://github.com/timost1234) for his invaluable support in investigating and resolving various issues, whether it was day or night, weekday or weekend.
+
 ## References
 
 - [Omniverse Farm Documentation](https://docs.omniverse.nvidia.com/farm/latest/index.html)
