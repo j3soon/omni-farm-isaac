@@ -347,7 +347,7 @@ Now that you have learned all the basics and successfully run Isaac Sim tasks, y
    # Download code
    git clone https://github.com/pytorch/examples.git
    sed -i 's/download=True/download=False/g' examples/mnist/main.py
-   sed -i 's/mnist_cnn\.pt/checkpoints\/mnist_cnn\.pt/g' examples/mnist/main.py
+   sed -i 's/"mnist_cnn\.pt"/"checkpoints\/mnist_cnn\.pt"/g' examples/mnist/main.py
    # Download data
    # Ref: https://github.com/pytorch/vision/blob/main/torchvision/datasets/mnist.py
    mkdir -p examples/data/MNIST/raw && cd examples/data/MNIST/raw
@@ -416,11 +416,10 @@ Now that you have learned all the basics and successfully run Isaac Sim tasks, y
      'ln -s /mnt/nfs/$FARM_USER/results/mnist/checkpoints /src/mnist/checkpoints' \
      'ls -al /src/mnist/checkpoints' \
      'cd /src/mnist' \
-     'python -u -m pip install -r requirements.txt' \
      'python -u main.py --save-model --epochs 1'" \
    "PyTorch MNIST Training"
    ```
-   The `apt-get install` and `pip install` commands here are only for demonstration purposes, installing packages during runtime is not recommended, as it can slow down the task and potentially cause issues. It is recommended to include all dependencies in the Docker image by specifying them in the Dockerfile. In addition the `python -u` flag above is to force the output to be unbuffered, which allows better logging of the output in Omniverse Farm UI.
+   The `apt-get install` and `python -u -m pip install` commands here are only for demonstration purposes, installing packages during runtime is not recommended, as it can slow down the task and potentially cause issues. It is recommended to include all dependencies in the Docker image by specifying them in the Dockerfile. In addition the `python -u` flag above is to force the output to be unbuffered, which allows better logging of the output in Omniverse Farm UI.
 7. Download the results.
    ```
    cd thirdparty/omnicli
