@@ -28,6 +28,12 @@
         ]
       }
     },
+    "dnsConfig": {
+      "nameservers": [
+        "8.8.8.8",
+        "8.8.4.4"
+      ]
+    },
     "hostIPC": true
   },
   "container": "j3soon/omni-farm-isaac-sim:4.1.0",
