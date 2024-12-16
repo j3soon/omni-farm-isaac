@@ -535,13 +535,6 @@ Task Logs:
   This may be due to building on Windows, try buliding your Docker image in a Linux environment instead.
 - If you notice that the logs are repeated twice when your task fails (non-zero return code), it's because Omniverse Farm automatically retries the job if it fails. To prevent this, you can cancel the task manually.
 
-Ulimit:
-- (ulimit open files) Consider increasing the max number of open files by `ulimit -n 524288` to prevent the following errors:
-  ```
-  OSError: [Errno 24] Too many open files: 'XXX'
-  ```
-- (ulimit stack size) Set `ulimit -s unlimited`.
-
 ## Developer Notes
 
 - The job definitions used above contains minimal configuration. You can include more configuration options by referring to the [Job Definition Docs](https://docs.omniverse.nvidia.com/farm/latest/guides/creating_job_definitions.html) and the [Farm Examples](https://docs.omniverse.nvidia.com/farm/latest/farm_examples.html).

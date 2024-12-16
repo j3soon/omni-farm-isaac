@@ -61,6 +61,16 @@ if [ "$#" -lt 1 ]; then
   exit 1
 fi
 
+echo "Current ulimit:"
+ulimit -a
+echo "Current hard ulimit:"
+ulimit -Ha
+echo "Setting ulimit to hard limit for open files and stack size..."
+ulimit -n $(ulimit -Hn)
+ulimit -s $(ulimit -Hs)
+echo "Current ulimit:"
+ulimit -a
+
 if [ -n "$DOWNLOAD_SRC" ] || [ -n "$DOWNLOAD_DEST" ]; then
   if [ -e "$DOWNLOAD_DEST" ]; then
     if [ -d "$DOWNLOAD_DEST" ]; then
