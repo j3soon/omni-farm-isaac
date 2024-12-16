@@ -531,7 +531,7 @@ Task Logs:
   /bin/bash: - : invalid option
   Process exited with return code: -1
   ```
-  This may be due to building on Windows, try buliding your Docker image in a Linux environment instead.
+  This may be due to the use of Windows when saving files, try buliding your Docker image in a Linux environment instead. This is often due to the newline character (`\r\n`) in the script file, which can be observed by `cat -v /run.sh` and is not recognized by the Linux shell.
 - If you notice that the logs are repeated twice when your task fails (non-zero return code), it's because Omniverse Farm automatically retries the job if it fails. To prevent this, you can cancel the task manually.
 
 ## Developer Notes
