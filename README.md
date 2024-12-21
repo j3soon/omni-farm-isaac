@@ -44,7 +44,7 @@ Before proceeding with the installation, make sure you have modified the followi
     max_capacity: 1024
   ```
 
-(Note that the pre-installation steps are not tested on a real machine yet...)
+> Note that the pre-installation steps are not tested on a real machine yet. Please refer to the post-installation steps for the tested steps.
 
 ### Installation
 
@@ -82,7 +82,7 @@ If you forgot to perform the pre-installation steps, you can still perform them 
     capacity.json: |2-
 
       {
-        "max_capacity": 512
+        "max_capacity": 1024
       }
   kind: ConfigMap
   ```
@@ -91,6 +91,70 @@ If you forgot to perform the pre-installation steps, you can still perform them 
   kubectl delete pods/controller-0 -n ov-farm
   ```
   and wait for the controller pod to automatically restart.
+
+In addition, the default `backoffLimit` is `1` for all K8s jobs. It is often preferred to set it to `0` for better K8s job management. For Omniverse Farm installed through Helm 1.6.0, simply follow the instructions below:
+
+1. We assumed you have downloaded the Omniverse Farm helm chart in the following path:
+
+   ```sh
+   NGC_API_TOKEN="<YOUR_API_KEY>"
+   FARM_HELM_VERSION=1.6.0
+   cd ~/j3soon
+   helm fetch \
+       https://helm.ngc.nvidia.com/nvstaging/omniverse-farm/charts/omniverse-farm-$FARM_HELM_VERSION.tgz \
+       --username='$oauthtoken' \
+       --password=$NGC_API_TOKEN
+   tar xvf omniverse-farm-$FARM_HELM_VERSION.tgz
+   ```
+
+2. Extract the Omniverse Farm Agent source file, save it, and then patch it:
+
+   ```sh
+   # Modify v1 K8s Client
+   mkdir -p ~/j3soon/omniverse-farm/files/patches/client-v1
+   kubectl exec pods/controller-0 -n ov-farm -- \
+     cat /opt/nvidia/omniverse/farm-agent-k8s/exts-farm-agent-k8s/omni.services.k8s.client-0.0.9/omni/services/k8s/client/client.py \
+     > ~/j3soon/omniverse-farm/files/patches/client-v1/client.py
+   sed -i 's/"backoffLimit": 1/"backoffLimit": 0/g' ~/j3soon/omniverse-farm/files/patches/client-v1/client.py
+   # Modify v2 K8s Client
+   mkdir -p ~/j3soon/omniverse-farm/files/patches/client-v2
+   kubectl exec pods/controller-0 -n ov-farm -- \
+     cat /opt/nvidia/omniverse/farm-agent-k8s/exts-farm-agent-k8s/omni.services.farm.k8s.client-0.1.3/omni/services/farm/k8s/client/manager.py \
+     > ~/j3soon/omniverse-farm/files/patches/client-v2/manager.py
+   sed -i 's/"backoffLimit": 1/"backoffLimit": 0/g' ~/j3soon/omniverse-farm/files/patches/client-v2/manager.py
+   ```
+
+3. Modify the K8s config map in the Helm chart:
+
+   ```sh
+   # Modify deployment.yaml
+   sed -i '/- name: capacity/{N; s|\(mountPath: /opt/nvidia/omniverse/agent\)|\1\n            - name: backoff-limit-client-v1-patch\n              mountPath: /opt/nvidia/omniverse/farm-agent-k8s/exts-farm-agent-k8s/omni.services.k8s.client-0.0.9/omni/services/k8s/client/client.py\n              subPath: client.py\n            - name: backoff-limit-client-v2-patch\n              mountPath: /opt/nvidia/omniverse/farm-agent-k8s/exts-farm-agent-k8s/omni.services.farm.k8s.client-0.1.3/omni/services/farm/k8s/client/manager.py\n              subPath: manager.py|}' ~/j3soon/omniverse-farm/templates/controller/deployment.yaml
+   sed -i '/- name: capacity/{N; N; s|\(configMap:\n            name: "{{ include "controller.fullname" . }}-capacity"\)|\1\n        - name: backoff-limit-client-v1-patch\n          configMap:\n            name: "{{ include "controller.fullname" . }}-backoff-limit-client-v1-patch"\n        - name: backoff-limit-client-v2-patch\n          configMap:\n            name: "{{ include "controller.fullname" . }}-backoff-limit-client-v2-patch"|}' ~/j3soon/omniverse-farm/templates/controller/deployment.yaml
+   # Create and modify backoff-limit-client-v1-patch.yaml
+   cp ~/j3soon/omniverse-farm/templates/controller/configmap-capacity.yaml ~/j3soon/omniverse-farm/templates/controller/backoff-limit-client-v1-patch.yaml
+   sed -i \
+     -e 's/name: "{{ include "controller.fullname" . }}-capacity"/name: "{{ include "controller.fullname" . }}-backoff-limit-client-v1-patch"/g' \
+     -e 's/capacity.json: |-/client.py: |/g' \
+     -e 's/{{ toPrettyJson \$.Values.controller.serviceConfig.capacity | nindent 8 }}/{{- .Files.Get "files\/patches\/client-v1\/client.py" | nindent 8 }}/g' \
+     ~/j3soon/omniverse-farm/templates/controller/backoff-limit-client-v1-patch.yaml
+   # Create and modify backoff-limit-client-v2-patch.yaml
+   cp ~/j3soon/omniverse-farm/templates/controller/configmap-capacity.yaml ~/j3soon/omniverse-farm/templates/controller/backoff-limit-client-v2-patch.yaml
+   sed -i \
+     -e 's/name: "{{ include "controller.fullname" . }}-capacity"/name: "{{ include "controller.fullname" . }}-backoff-limit-client-v2-patch"/g' \
+     -e 's/capacity.json: |-/manager.py: |/g' \
+     -e 's/{{ toPrettyJson \$.Values.controller.serviceConfig.capacity | nindent 8 }}/{{- .Files.Get "files\/patches\/client-v2\/manager.py" | nindent 8 }}/g' \
+     ~/j3soon/omniverse-farm/templates/controller/backoff-limit-client-v2-patch.yaml
+   ```
+
+4. (Optional) Package and backup the patched files:
+
+   ```sh
+   FARM_HELM_VERSION=1.6.0
+   cd ~/j3soon
+   tar cvfz omniverse-farm-$FARM_HELM_VERSION-patched.tgz omniverse-farm
+   ```
+
+5. Upgrade the Helm chart with the patched files with `helm upgrade` using the patched `omniverse-farm` directory.
 
 ## Setup
 
@@ -546,6 +610,8 @@ Task Logs:
   kubectl get jobs -n ov-farm -o yaml | grep backoffLimit
   ```
   - The default backoff limit of the Omniverse Farm is set to 1. Originally, I thought this could be fixed by overriding the K8s job template during Omniverse Farm pre-installation, as described [here](https://docs.omniverse.nvidia.com/farm/latest/deployments/kubernetes.html#step-2). However, after some trial and error with [@timost1234](https://github.com/timost1234), it seems that we cannot change this value. Since the `cm/controller-job-template-spec-overrides` ConfigMap doesn't seem to allow changing the `backoffLimit` field.
+  - This is because the `cm/controller-job-template-spec-overrides` ConfigMap is used to override the Job `spec.template.spec`. However, the `backoffLimit` field is under the Job `spec`. See the [K8s document on Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/job) for more info.
+  - In order to fix this, we must change the Omniverse Farm agent code, which is detailed in the [post-installation section](#post-installation).
 - The `job_spec_path` is required for options such as `args` and `env` to be saved. If the `job_spec_path` is `null`, these options will be forced empty. In our examples, we simply set it to a dummy value (`"null"`). See [this thread](https://nvidia.slack.com/archives/C03AZDA710T/p1689869120574269) for more details.
 - If relative paths are not setup correctly, the task might fail due to the behavior of automatically prepending the path with the current working directory (`/isaac-sim`). This behavior may result in errors such as:
   ```
