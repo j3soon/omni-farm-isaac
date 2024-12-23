@@ -637,6 +637,8 @@ Task Logs:
 
 I must thank [Kuan-Ting Yeh](https://github.com/timost1234) for his invaluable support in investigating and resolving various issues, whether it was day or night, weekday or weekend.
 
+Disclaimer: this is not an official NVIDIA product.
+
 ## References
 
 - [Omniverse Farm Documentation](https://docs.omniverse.nvidia.com/farm/latest/index.html)
