@@ -29,6 +29,8 @@ if [ "$#" -ne 1 ]; then
 fi
 
 # Using an undocumented API endpoint
+echo "Parsing job definition..."
+json_content=$(jq --arg name "$1" '. + {name: $name}' "job_definitions/$1.json")
 echo "Trying to remove job definition in case of job definition update..."
 curl -X "POST" "${FARM_URL}/queue/management/jobs/remove" \
     -H "Accept: application/json" \
@@ -38,7 +40,6 @@ curl -X "POST" "${FARM_URL}/queue/management/jobs/remove" \
         "job_definition_name": "'"$1"'"
     }'
 echo -e "\nSaving job definition..."
-json_content=$(jq --arg name "$1" '. + {name: $name}' "job_definitions/$1.json")
 curl -X "POST" "${FARM_URL}/queue/management/jobs/save" \
     -H "Accept: application/json" \
     -H "Content-Type: application/json" \
