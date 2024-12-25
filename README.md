@@ -252,6 +252,8 @@ This demo allows running arbitrary shell commands on Omniverse Farm.
 
 To cancel tasks, go to the Omniverse Farm UI, select all tasks you want to cancel, and select `Bulk Actions > Cancel` and click the `Apply` button.
 
+Please don't use the `Retry` and `Archive` features to prevent potential issues. Consider resubmitting the task with `submit_task.sh` and cancel the task with `Cancel`.
+
 ![](docs/assets/cancel-tasks.png)
 
 ## Running Isaac Sim Tasks
@@ -631,8 +633,10 @@ Task Logs:
   apt-get update && apt-get install -y iputils-ping
   ping <NUCLEUS_HOSTNAME>
   # check that the Nucleus server is reachable
-  # in addition, you can also run `omnicli` commands to confirm the issue
+  # in addition, you can also run `omnicli` commands to confirm the issue.
+  # If you want to execute `run.sh` script, consider running something like `bash -c /run.sh`.
   ```
+- If a task encounters OOM (Out of Memory) issues, it may crash the node, resulting in no errors in the log outputs.
 
 ## Acknowledgements
 
