@@ -27,7 +27,7 @@ The scripts below are currently based on Isaac Sim 4.1.0 and Isaac Lab 1.1.0. Th
 
 > Only the cluster admin should read this section. Please skip to the [Setup section](#setup) if you are a user or already have Omniverse Farm installed.
 
-### Pre-Installation
+### (Optional) Pre-Installation
 
 Before proceeding with the installation, make sure you have modified the following values:
 
@@ -57,7 +57,7 @@ Follow [this example](https://docs.omniverse.nvidia.com/farm/latest/farm_example
 
 > This repo is tested on Omniverse Farm 105.1.0 with [Kubernetes set up](https://docs.omniverse.nvidia.com/farm/latest/deployments/kubernetes.html). The scripts are tested within a environment consists of multiple OVX server nodes with L40 GPUs, a CPU-only head node, along with a large NVMe storage server. These servers are interconnected via a high-speed network utilizing the BlueField-3 DPU and ConnectX-7 NIC. See [this post](https://blogs.nvidia.com/blog/ovx-storage-partner-validation-program/) and [this post](https://nvidianews.nvidia.com/news/nvidia-launches-data-center-scale-omniverse-computing-system-for-industrial-digital-twins) for more information. However, the scripts in this repository should work on any Omniverse Farm setup, even on a single machine.
 
-### Post-Installation
+### (Optional) Post-Installation
 
 If you forgot to perform the pre-installation steps, you can still perform them after installation:
 
@@ -503,7 +503,7 @@ Now that you have learned all the basics and successfully run Isaac Sim tasks, y
 
 > Make sure to follow the **Running Isaac Sim Tasks** section before moving on to this section.
 
-The demo tasks here assume the aforementioned `nuclues-secret` and `nfs-pvc` setup. You can modify the job definition files to include your own credentials and persistent volume claim.
+The demo tasks here assume the aforementioned `nucleus-secret` and `nfs-pvc` setup. You can modify the job definition files to include your own credentials and persistent volume claim.
 
 In this section, we only uses the [j3soon/omni-farm-isaaclab](https://hub.docker.com/r/j3soon/omni-farm-isaaclab/tags) docker image for simplicity. You can build your own docker image with the necessary dependencies and scripts for your tasks. This will require you to write a custom job definition and optionally copy `omnicli` when building your docker image.
 
@@ -578,7 +578,8 @@ Task States:
   ```
   Note that the docker image must be on a public registry such as Docker Hub. For example, the `j3soon/omni-farm-general` image is [a public image on Docker Hub](https://hub.docker.com/repository/docker/j3soon/omni-farm-general).
 - If a task requests more GPUs than available, the task will be stuck in the `running` state.
-- When using Omniverse Isaac Gym Envs with SKRL and Ray Tune, the task will sometimes complete but stuck in the `running` state.
+- In some workloads (such as using Omniverse Isaac Gym Envs with SKRL and Ray Tune), the task will sometimes complete successfully but stuck in the `running` state. Please contact the cluster admin to confirm the status of this workload and cancel it through UI if the task has already completed.
+- In some workloads, the task will sometimes keep running but show as the `errored` state. In this case, there will be no error logs, please contact the cluster admin to confirm the status of this workload.
 - You can confirm the task is actually _running_ only when you see the log outputs (aside from the `No logs found` message).
 
 Task Logs:
@@ -624,7 +625,7 @@ Task Logs:
   ```
   Error: Connection
   ```
-  This may be due to incorrect Nuclues credentials or incorrect Nucleus server URL. Try launching a `sleep infinity` task and exec into the pod to debug the issue:
+  This may be due to incorrect Nucleus credentials or incorrect Nucleus server URL. Try launching a `sleep infinity` task and exec into the pod to debug the issue:
   ```sh
   kubectl exec -it -n ov-farm <POD_ID> -- /bin/bash
   # in the container
