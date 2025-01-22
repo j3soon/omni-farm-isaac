@@ -1,10 +1,10 @@
 # Running Isaac Sim Workloads on Omniverse Farm
 
-These scripts are only tested on Linux environment (Ubuntu). If you are using MacOS or Windows, consider using Virtual Box to setup a Ubuntu virtual machine. WSL2 may work but hasn't been tested.
+These scripts are only tested on Linux environment (Ubuntu). If you are using MacOS or Windows, consider using Virtual Box to setup a Ubuntu virtual machine. WSL2 may work but hasn't been tested. Please note that these scripts only support x86 architecture, and will not work on ARM architecture.
 
 ## Support Matrix
 
-The scripts below are currently based on Isaac Sim 4.1.0 and Isaac Lab 1.1.0. The scripts should work on other versions of Isaac Sim and Isaac Lab, but you may need to modify the scripts accordingly.
+The scripts below are currently based on Isaac Sim 4.2.0 and Isaac Lab 1.4.0. The scripts should work on other versions of Isaac Sim and Isaac Lab, but you may need to modify the scripts accordingly.
 
 ### Isaac Sim
 
@@ -215,6 +215,26 @@ scripts/vpn/uninstall_config.sh
 These 4 scripts are just wrappers for the `openvpn3` command line tool. See the [official documentation](https://community.openvpn.net/openvpn/wiki/OpenVPN3Linux) for more details.
 
 If you need to connect multiple machines to the VPN simultaneously, avoid using the same VPN profile. Doing so may cause one machine to disconnect when another connects. Consider asking the cluster admin to generate separate VPN profiles for each of your machine.
+
+If you experience internet connectivity issues after connecting to the VPN, a quick workaround is to update the `/etc/resolv.conf` file. Replace its content such as:
+
+```
+nameserver 127.0.0.53
+options edns0 trust-ad
+search .
+```
+
+with:
+
+```
+nameserver 127.0.0.53
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+options edns0 trust-ad
+search .
+```
+
+You will need to make this change after each machine reboot.
 
 > If a previous config is already installed, you must uninstall it before installing a new one. Otherwise, the scripts will create two VPN profiles with the same name, which can only be fixed by using the `openvpn3` command line tool directly. Specifically, use the following commands:
 >
@@ -496,6 +516,8 @@ Now that you have learned all the basics and successfully run Isaac Sim tasks, y
    cd ../..
    ```
    When working with large files, compressing them before uploading/downloading is often more efficient, as handling many smaller files can slow down file transfer processes.
+
+The scripts mentioned above do not support special characters, such as whitespace, in file paths or arguments, as they do not include handling for escaping such characters. To avoid potential issues, it is highly recommended to refrain from using special characters in file paths and arguments.
 
 > If you are not running Isaac Lab tasks, you can skip the remaining sections. However, you may want to take a look at the [FAQ section](#faq) for potential issues that may arise during submitting your tasks. If you encounter any issues, first search this document to see if it's addressed in the FAQ. If not, reach out to the cluster administrator for assistance.
 
