@@ -234,7 +234,7 @@ options edns0 trust-ad
 search .
 ```
 
-You will need to make this change after each machine reboot.
+You will need to make this change after each machine reboot or VPN status change.
 
 > If a previous config is already installed, you must uninstall it before installing a new one. Otherwise, the scripts will create two VPN profiles with the same name, which can only be fixed by using the `openvpn3` command line tool directly. Specifically, use the following commands:
 >
@@ -488,7 +488,8 @@ Now that you have learned all the basics and successfully run Isaac Sim tasks, y
      'echo done'" \
    "PyTorch MNIST Data Preparation"
    ```
-   Although `/mnt/nfs` is a Network File System (NFS) mounted volume, it typically isn't the bottleneck during training. However, if you notice that your dataloader is causing performance issues, consider copying the dataset to the container's local storage before starting the training process. The NFS volume may also cause issues if you are using `tar` on the mounted volume, see [the FAQ section](#faq) for more details.
+   The `/run.sh` file mentioned here is the same `run.sh` script that was copied directly into the Docker image without any modifications during the second step. This pre-written helper script streamlines file downloads and uploads to and from Nucleus while also supporting the sequential execution of multiple commands.  
+   > Although `/mnt/nfs` is a Network File System (NFS) mounted volume, it typically isn't the bottleneck during training. However, if you notice that your dataloader is causing performance issues, consider copying the dataset to the container's local storage before starting the training process. The NFS volume may also cause issues if you are using `tar` on the mounted volume, see [the FAQ section](#faq) for more details.
 6. Submit the job.
    ```sh
    scripts/submit_task.sh ${FARM_USER}-general-volume-example-1 \
