@@ -450,7 +450,7 @@ Now that you have learned all the basics and successfully run Isaac Sim tasks, y
    docker build -t j3soon/omni-farm-isaac-general -f Dockerfile_general .
    docker push j3soon/omni-farm-isaac-general
    ```
-   In this example, dependencies are not installed in the Dockerfile. However, in practice, you will want to select a suitable base image and pre-install all dependencies in the Dockerfile such as `pip install -r requirements.txt` to prevent the need of installing dependencies every time after launching a container. You may also want to delete the `.dockerignore` file. In addition, ensure that you always copy the `run.sh` file and the `omnicli` directory to the root directory (`/`) instead of other subdirectories. Failing to do so will result in errors, as the script relies on absolute paths. As a side note, if your code will not be modified, you can also directly copy the code to your Docker image. However, this is usually not the case, as you often want to update your code without rebuilding the Docker image.
+   In this example, dependencies are not installed in the Dockerfile. However, in practice, you will want to select a suitable base image and pre-install all dependencies in the Dockerfile such as `pip install -r requirements.txt` to prevent the need of installing dependencies every time after launching a container. You may also want to delete the `.dockerignore` file. In addition, ensure that you always copy the `run.sh` file and the `omnicli` directory directly to the root directory (`/`) without any modifications, rather than placing them in other subdirectories. Failing to do so will result in errors, as the script relies on absolute paths. As a side note, if your code will not be modified, you can also directly copy the code to your Docker image. However, this is usually not the case, as you often want to update your code without rebuilding the Docker image.
 3. Upload your dataset and code to Nucleus server.
    ```
    cd thirdparty/omnicli
@@ -470,6 +470,8 @@ Now that you have learned all the basics and successfully run Isaac Sim tasks, y
    scripts/load_job.sh
    ```
    > If you have changed the mounted PVC name in the previous section, make sure to update the `nfs-pvc` fields in the job definition file accordingly.
+   >
+   > For other custom jobs, consider updating the `container` entry to specify your custom Docker image on Docker Hub and adjust `nvidia.com/gpu` to set the number of GPUs required.
 5. Download and extract the dataset.
    ```sh
    scripts/submit_task.sh ${FARM_USER}-general-volume-example-1 \
