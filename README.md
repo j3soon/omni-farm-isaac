@@ -511,6 +511,7 @@ Now that you have learned all the basics and successfully run Isaac Sim tasks, y
    "PyTorch MNIST Training"
    ```
    The `apt-get install` and `python -u -m pip install` commands here are only for demonstration purposes, installing packages during runtime is not recommended, as it can slow down the task and potentially cause issues. It is recommended to include all dependencies in the Docker image by specifying them in the Dockerfile. In addition the `python -u` flag above is to force the output to be unbuffered, which allows better logging of the output in Omniverse Farm UI.
+   > The `--upload-src` and `--upload-dest` options automatically upload results to Nucleus after all commands are executed. If you prefer to upload results manually after training, ensure they are stored in a mounted volume (e.g., `/mnt/nfs`). In this case, you can omit these options and handle the upload as a separate task.
 7. Download the results.
    ```
    cd thirdparty/omnicli
