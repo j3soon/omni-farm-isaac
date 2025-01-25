@@ -268,7 +268,22 @@ scripts/submit_task.sh echo-example "hello world" "Echo hello world"
 
 This demo allows running arbitrary shell commands on Omniverse Farm.
 
-## Canceling Tasks
+## Cluster Environment
+
+> For detailed usage instructions, including submitting rendering tasks through the Omniverse Kit GUI and obtaining necessary credentials, refer to the slides provided by the cluster admin.
+
+### Nucleus and Farm
+
+This cluster environment consists of two main components from the user's perspective:
+1. Omniverse Nucleus Server. Used for file storage, accessible through:
+   - The [Omniverse Launcher](https://developer.nvidia.com/omniverse#section-getting-started)'s `NUCLEUS` section. Connect to the server using the hostname specified in `${NUCLEUS_HOSTNAME}` within `secrets/env.sh`.
+   - A web browser, by navigating to `http://${NUCLEUS_HOSTNAME}:8080`. (`${NUCLEUS_HOSTNAME}` from `secrets/env.sh`)
+   - `omnicli` CLI as mentioned in the following sections.
+2. Omniverse Farm. Used for task management, accessible via:
+   - A web browser at `${FARM_URL}/queue/management/dashboard`. (`${FARM_URL}` from `secrets/env.sh`)
+   - `save_job.sh` and `submit_task.sh` CLIs as mentioned in the previous section.
+
+### Cancelling Farm Tasks
 
 To cancel tasks, go to the Omniverse Farm UI, select all tasks you want to cancel, and select `Bulk Actions > Cancel` and click the `Apply` button.
 
