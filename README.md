@@ -621,6 +621,7 @@ Task States:
 - If a task requests more GPUs than available, the task will be stuck in the `running` state.
 - In some workloads (such as using Omniverse Isaac Gym Envs with SKRL and Ray Tune), the task will sometimes complete successfully but stuck in the `running` state. Please contact the cluster admin to confirm the status of this workload and cancel it through UI if the task has already completed.
 - In some workloads, the task will sometimes keep running but show as the `errored` state. In this case, there will be no error logs, please contact the cluster admin to confirm the status of this workload.
+- If your task gets stuck in the `cancelling` state or appears to be running despite being in the `cancelled` state, please contact the cluster admin for killing the task for you.
 - You can confirm the task is actually _running_ only when you see the log outputs (aside from the `No logs found` message).
 
 Task Logs:
