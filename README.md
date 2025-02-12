@@ -10,6 +10,7 @@ The scripts below are currently based on Isaac Sim 4.2.0 and Isaac Lab 1.4.0. Th
 
 | Docker Image | Isaac Sim | Ubuntu |
 |--------------|-----------|--------|
+| [`j3soon/omni-farm-isaac-sim:4.5.0`](https://hub.docker.com/r/j3soon/omni-farm-isaac-sim/tags?name=4.5.0) | 4.5.0 | 22.04.5 LTS |
 | [`j3soon/omni-farm-isaac-sim:4.2.0`](https://hub.docker.com/r/j3soon/omni-farm-isaac-sim/tags?name=4.2.0) | 4.2.0 | 22.04.3 LTS |
 | [`j3soon/omni-farm-isaac-sim:4.1.0`](https://hub.docker.com/r/j3soon/omni-farm-isaac-sim/tags?name=4.1.0) | 4.1.0 | 22.04.3 LTS |
 | [`j3soon/omni-farm-isaac-sim:4.0.0`](https://hub.docker.com/r/j3soon/omni-farm-isaac-sim/tags?name=4.0.0) | 4.0.0 | 22.04.3 LTS |
@@ -19,10 +20,11 @@ The scripts below are currently based on Isaac Sim 4.2.0 and Isaac Lab 1.4.0. Th
 
 | Docker Image | Isaac Lab | Isaac Sim | Ubuntu |
 |--------------|-----------|-----------|--------|
-| [`j3soon/omni-farm-isaac-lab:1.1.0`](https://hub.docker.com/r/j3soon/omni-farm-isaac-lab/tags?name=1.1.0) | 1.1.0 | 4.1.0 | 22.04.3 LTS |
-| [`j3soon/omni-farm-isaac-lab:1.3.0`](https://hub.docker.com/r/j3soon/omni-farm-isaac-lab/tags?name=1.3.0) | 1.3.0 | 4.2.0 | 22.04.3 LTS |
-| [`j3soon/omni-farm-isaac-lab:1.4.0`](https://hub.docker.com/r/j3soon/omni-farm-isaac-lab/tags?name=1.4.0) | 1.4.0 | 4.2.0 | 22.04.3 LTS |
+| [`j3soon/omni-farm-isaac-lab:2.0.0`](https://hub.docker.com/r/j3soon/omni-farm-isaac-lab/tags?name=2.0.0) | 2.0.0 | 4.5.0 | 22.04.5 LTS |
 | [`j3soon/omni-farm-isaac-lab:1.4.1`](https://hub.docker.com/r/j3soon/omni-farm-isaac-lab/tags?name=1.4.1) | 1.4.1 | 4.2.0 | 22.04.3 LTS |
+| [`j3soon/omni-farm-isaac-lab:1.4.0`](https://hub.docker.com/r/j3soon/omni-farm-isaac-lab/tags?name=1.4.0) | 1.4.0 | 4.2.0 | 22.04.3 LTS |
+| [`j3soon/omni-farm-isaac-lab:1.3.0`](https://hub.docker.com/r/j3soon/omni-farm-isaac-lab/tags?name=1.3.0) | 1.3.0 | 4.2.0 | 22.04.3 LTS |
+| [`j3soon/omni-farm-isaac-lab:1.1.0`](https://hub.docker.com/r/j3soon/omni-farm-isaac-lab/tags?name=1.1.0) | 1.1.0 | 4.1.0 | 22.04.3 LTS |
 
 ## Installing Omniverse Farm
 

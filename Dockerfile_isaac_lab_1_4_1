@@ -57,6 +57,10 @@ RUN git clone https://github.com/isaac-sim/IsaacLab.git ~/IsaacLab \
     && cd ~/IsaacLab \
     && git checkout v1.4.1
 WORKDIR /root/IsaacLab
+# Apply patch for rsl-rl package name change
+# Ref: https://github.com/isaac-sim/IsaacLab/pull/1841#issuecomment-2652779060
+RUN sed -i 's/rsl-rl@/rsl-rl-lib@/g' ./source/extensions/omni.isaac.lab_tasks/config/extension.toml
+RUN sed -i 's/rsl-rl@/rsl-rl-lib@/g' ./source/extensions/omni.isaac.lab_tasks/setup.py
 RUN ln -s /isaac-sim _isaac_sim
 RUN ./isaaclab.sh --conda
 RUN . /opt/conda/etc/profile.d/conda.sh \
