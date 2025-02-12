@@ -60,9 +60,9 @@ WORKDIR /root/IsaacLab
 RUN ln -s /isaac-sim _isaac_sim
 RUN ./isaaclab.sh --conda
 RUN . /opt/conda/etc/profile.d/conda.sh \
-    && conda activate isaaclab \
+    && conda activate env_isaaclab \
     && ./isaaclab.sh --install
-RUN echo "conda activate isaaclab" >> ~/.bashrc
+RUN echo "conda activate env_isaaclab" >> ~/.bashrc
 
 # Install ffmpeg for video recording
 # Ref: https://isaac-sim.github.io/IsaacLab/source/how-to/wrap_rl_env.html#wrapper-for-recording-videos
