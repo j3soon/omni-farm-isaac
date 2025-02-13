@@ -4,7 +4,7 @@ These scripts are only tested on Linux environment (Ubuntu). If you are using Ma
 
 ## Support Matrix
 
-The scripts below are currently based on Isaac Sim 4.2.0 and Isaac Lab 1.4.0. The scripts should work on other versions of Isaac Sim and Isaac Lab, but you may need to modify the scripts accordingly.
+The scripts below are currently based on Isaac Sim 4.5.0 and Isaac Lab 2.0.0. The scripts should work on other versions of Isaac Sim and Isaac Lab, but you may need to modify the scripts accordingly.
 
 ### Isaac Sim
 
@@ -308,9 +308,9 @@ scripts/load_job.sh
 Then, submit the job:
 
 ```sh
-scripts/submit_task.sh isaac-sim-dummy-example "./standalone_examples/api/omni.isaac.core/time_stepping.py" "Isaac Sim Time Stepping"
+scripts/submit_task.sh isaac-sim-dummy-example "./standalone_examples/api/isaacsim.core.api/time_stepping.py" "Isaac Sim Time Stepping"
 # or
-scripts/submit_task.sh isaac-sim-dummy-example "./standalone_examples/api/omni.isaac.core/simulation_callbacks.py" "Isaac Sim Simulation Callbacks"
+scripts/submit_task.sh isaac-sim-dummy-example "./standalone_examples/api/isaacsim.core.api/simulation_callbacks.py" "Isaac Sim Simulation Callbacks"
 ```
 
 > Optionally, you can remove the job definition file after the job has finished:
@@ -329,7 +329,7 @@ Use [`omnicli`](https://docs.omniverse.nvidia.com/connect/latest/connect-sample.
 
 ```sh
 cd thirdparty/omnicli
-./omnicli copy "../../tasks/isaac-sim-simulation-example.py" "omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Scripts/isaac-sim-simulation-example.py"
+./omnicli copy "../../tasks/isaac-sim-simulation-example.py" "omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.5/Scripts/isaac-sim-simulation-example.py"
 cd ../..
 ```
 
@@ -345,10 +345,10 @@ Then, submit the job:
 ```sh
 scripts/submit_task.sh isaac-sim-basic-example \
 "/run.sh \
-  --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Scripts/isaac-sim-simulation-example.py' \
+  --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.5/Scripts/isaac-sim-simulation-example.py' \
   --download-dest '/src/isaac-sim-simulation-example.py' \
   --upload-src '/results/isaac-sim-simulation-example.txt' \
-  --upload-dest 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Results/isaac-sim-simulation-example.txt' \
+  --upload-dest 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.5/Results/isaac-sim-simulation-example.txt' \
   './python.sh -u /src/isaac-sim-simulation-example.py 10'" \
   "Isaac Sim Cube Fall"
 ```
@@ -363,13 +363,13 @@ This demo allows running arbitrary Isaac Sim scripts on Omniverse Farm by downlo
 
 ### Setting Nucleus Credentials
 
-If your Nucleus server have a non-default username and password. Use `./omnicli auth [username] [password]` to enter your credentials for uploading files. Alternatively, you can use Omniverse Launcher to perform authentication through a GUI. In addition, use the `isaac-sim-nucleus-example.json` job definition instead to include your username and password. The job definition assumes `nucleus-secret` has been added to the K8s secrets by the admin, including `OMNI_USER` and `OMNI_PASS`. Alternatively, if security is not a concern, you may include the username and password directly through the `env` entry in the job definitions.
+If your Nucleus server have a non-default username and password. Use `./omnicli auth [username] [password]` to enter your credentials for uploading files. Alternatively, you can execute the `./omnicli copy ...` command in a Desktop environment, and use the pop up web browser to perform authentication through a GUI. In addition, use the `isaac-sim-nucleus-example.json` job definition instead to include your username and password. The job definition assumes `nucleus-secret` has been added to the K8s secrets by the admin, including `OMNI_USER` and `OMNI_PASS`. Alternatively, if security is not a concern, you may include the username and password directly through the `env` entry in the job definitions.
 
 Use [`omnicli`](https://docs.omniverse.nvidia.com/connect/latest/connect-sample.html#omni-cli) to upload the script to Nucleus:
 
 ```sh
 cd thirdparty/omnicli
-./omnicli copy "../../tasks/isaac-sim-simulation-example.py" "omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Scripts/isaac-sim-simulation-example.py"
+./omnicli copy "../../tasks/isaac-sim-simulation-example.py" "omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.5/Scripts/isaac-sim-simulation-example.py"
 cd ../..
 ```
 
@@ -385,10 +385,10 @@ Then, submit the job:
 ```sh
 scripts/submit_task.sh isaac-sim-nucleus-example \
 "/run.sh \
-  --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Scripts/isaac-sim-simulation-example.py' \
+  --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.5/Scripts/isaac-sim-simulation-example.py' \
   --download-dest '/src/isaac-sim-simulation-example.py' \
   --upload-src '/results/isaac-sim-simulation-example.txt' \
-  --upload-dest 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Results/isaac-sim-simulation-example.txt' \
+  --upload-dest 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.5/Results/isaac-sim-simulation-example.txt' \
   './python.sh -u /src/isaac-sim-simulation-example.py 10'" \
   "Isaac Sim Cube Fall"
 ```
@@ -409,7 +409,7 @@ Use [`omnicli`](https://docs.omniverse.nvidia.com/connect/latest/connect-sample.
 
 ```sh
 cd thirdparty/omnicli
-./omnicli copy "../../tasks/isaac-sim-simulation-example.py" "omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Scripts/isaac-sim-simulation-example.py"
+./omnicli copy "../../tasks/isaac-sim-simulation-example.py" "omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.5/Scripts/isaac-sim-simulation-example.py"
 cd ../..
 ```
 
@@ -425,7 +425,7 @@ Then, submit the job:
 ```sh
 scripts/submit_task.sh isaac-sim-volume-example \
 "/run.sh \
-  --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Scripts/isaac-sim-simulation-example.py' \
+  --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.5/Scripts/isaac-sim-simulation-example.py' \
   --download-dest '/src/isaac-sim-simulation-example.py' \
   'ls /mnt/nfs' \
   'mkdir -p /mnt/nfs/results' \
@@ -473,11 +473,11 @@ Now that you have learned all the basics and successfully run Isaac Sim tasks, y
    ```
    cd thirdparty/omnicli
    # copy dataset
-   ./omnicli delete "omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Data"
-   ./omnicli copy "../../examples/data" "omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Data"
+   ./omnicli delete "omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.5/Data"
+   ./omnicli copy "../../examples/data" "omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.5/Data"
    # copy code
-   ./omnicli delete "omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Scripts/mnist"
-   ./omnicli copy "../../examples/mnist" "omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Scripts/mnist"
+   ./omnicli delete "omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.5/Scripts/mnist"
+   ./omnicli copy "../../examples/mnist" "omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.5/Scripts/mnist"
    cd ../..
    ```
    When uploading a newer version of your code or dataset, always delete the existing directory first. This ensures that any files removed in the new version are not left behind, as the `omnicli copy` command does not automatically delete outdated files. If you expect you will run a newer version of your code while previous tasks are still running, consider implementing a versioning system by including a version tag in the file path to prevent conflict.
@@ -494,7 +494,7 @@ Now that you have learned all the basics and successfully run Isaac Sim tasks, y
    ```sh
    scripts/submit_task.sh ${FARM_USER}-general-volume-example-1 \
    "/run.sh \
-     --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Data' \
+     --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.5/Data' \
      --download-dest '/mnt/nfs/$FARM_USER/data' \
      'ls /mnt/nfs/$FARM_USER/data/MNIST/raw' \
      'cd /mnt/nfs/$FARM_USER/data/MNIST/raw' \
@@ -512,10 +512,10 @@ Now that you have learned all the basics and successfully run Isaac Sim tasks, y
    ```sh
    scripts/submit_task.sh ${FARM_USER}-general-volume-example-1 \
    "/run.sh \
-     --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Scripts/mnist' \
+     --download-src 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.5/Scripts/mnist' \
      --download-dest '/src/mnist' \
      --upload-src '/mnt/nfs/$FARM_USER/results/mnist/checkpoints' \
-     --upload-dest 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Results/mnist/checkpoints' \
+     --upload-dest 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.5/Results/mnist/checkpoints' \
      'apt-get update' \
      'apt-get install -y tree' \
      'tree /mnt/nfs/$FARM_USER/data' \
@@ -534,7 +534,7 @@ Now that you have learned all the basics and successfully run Isaac Sim tasks, y
    ```
    cd thirdparty/omnicli
    # download results
-   ./omnicli copy "omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Results" "../../Results"
+   ./omnicli copy "omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.5/Results" "../../Results"
    cd ../..
    ```
    When working with large files, compressing them before uploading/downloading is often more efficient, as handling many smaller files can slow down file transfer processes.
@@ -549,7 +549,7 @@ The scripts mentioned above do not support special characters, such as whitespac
 
 The demo tasks here assume the aforementioned `nucleus-secret` and `nfs-pvc` setup. You can modify the job definition files to include your own credentials and persistent volume claim.
 
-In this section, we only uses the [j3soon/omni-farm-isaaclab](https://hub.docker.com/r/j3soon/omni-farm-isaaclab/tags) docker image for simplicity. You can build your own docker image with the necessary dependencies and scripts for your tasks. This will require you to write a custom job definition and optionally copy `omnicli` when building your docker image.
+In this section, we only uses the [j3soon/omni-farm-isaac-lab](https://hub.docker.com/r/j3soon/omni-farm-isaac-lab/tags) docker image for simplicity. You can build your own docker image with the necessary dependencies and scripts for your tasks. This will require you to write a custom job definition and optionally copy `omnicli` when building your docker image.
 
 ### Built-in Tasks
 
@@ -566,13 +566,13 @@ Then, submit the job:
 scripts/submit_task.sh isaac-lab-volume-example \
 "/run.sh \
   --upload-src '/root/IsaacLab/logs' \
-  --upload-dest 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.1/Results/IsaacLab/logs' \
+  --upload-dest 'omniverse://$NUCLEUS_HOSTNAME/Projects/$FARM_USER/Isaac/4.5/Results/IsaacLab/logs' \
   'ls /mnt/nfs' \
   'mkdir -p /mnt/nfs/results/IsaacLab/logs' \
   'ln -s /mnt/nfs/results/IsaacLab/logs logs' \
   '. /opt/conda/etc/profile.d/conda.sh' \
-  'conda activate isaaclab' \
-  './isaaclab.sh -p source/standalone/workflows/rl_games/train.py --task Isaac-Ant-v0 --headless'" \
+  'conda activate env_isaaclab' \
+  './isaaclab.sh -p scripts/reinforcement_learning/rl_games/train.py --task=Isaac-Cartpole-v0 --headless'" \
   "Isaac Lab RL-Games Isaac-Ant-v0"
 ```
 

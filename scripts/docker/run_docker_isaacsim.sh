@@ -13,4 +13,4 @@ docker run --name isaac-sim --entrypoint bash -it --gpus all -e "ACCEPT_EULA=Y" 
   -v ~/docker/isaac-sim/data:/root/.local/share/ov/data:rw \
   -v ~/docker/isaac-sim/documents:/root/Documents:rw \
   -v "$DIR/../..":/workspace:rw \
-  j3soon/omni-farm-isaac:local
+  j3soon/omni-farm-isaac-sim:local

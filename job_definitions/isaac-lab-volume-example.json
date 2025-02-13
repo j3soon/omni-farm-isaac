@@ -57,7 +57,7 @@
     },
     "hostIPC": true
   },
-  "container": "j3soon/omni-farm-isaaclab:1.4.0",
+  "container": "j3soon/omni-farm-isaac-lab:2.0.0",
   "allowed_args": {
     "args": {
       "arg": "",

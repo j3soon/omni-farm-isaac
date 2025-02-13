@@ -2,4 +2,4 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 cd "$DIR/../.."
-docker build -f Dockerfile.isaaclab -t j3soon/omni-farm-isaaclab:local .
+docker build -f Dockerfile.isaac_lab -t j3soon/omni-farm-isaac-lab:local .

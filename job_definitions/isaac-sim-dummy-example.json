@@ -36,7 +36,7 @@
     },
     "hostIPC": true
   },
-  "container": "nvcr.io/nvidia/isaac-sim:4.2.0",
+  "container": "nvcr.io/nvidia/isaac-sim:4.5.0",
   "allowed_args": {
     "args": {
       "arg": "",

@@ -10,7 +10,7 @@ print(args.steps)
 
 #launch Isaac Sim before any other imports
 #default first two lines in any standalone application
-from omni.isaac.kit import SimulationApp
+from isaacsim import SimulationApp
 
 simulation_app = SimulationApp({"headless": True})
 
