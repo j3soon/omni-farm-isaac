@@ -24,6 +24,7 @@
         }
       }
     ],
+    "imagePullPolicy": "Always",
     "active_deadline_seconds": 864000,
     "affinity": {
       "podAffinity": {
