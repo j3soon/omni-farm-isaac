@@ -61,6 +61,8 @@ if [ "$#" -lt 1 ]; then
   exit 1
 fi
 
+echo "Assigned to K8s node with hostname: $NODE_NAME"
+
 echo "Setting ulimit to hard limit for open files and stack size..."
 echo "Current ulimit:"
 ulimit -a

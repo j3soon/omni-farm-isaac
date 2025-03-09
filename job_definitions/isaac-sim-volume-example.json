@@ -7,6 +7,16 @@
     "resource_limits": {
       "nvidia.com/gpu": 1
     },
+    "env": [
+      {
+        "name": "NODE_NAME",
+        "valueFrom": {
+          "fieldRef": {
+            "fieldPath": "spec.nodeName"
+          }
+        }
+      }
+    ],
     "env_from": [
       {
         "secretRef": {

@@ -3,6 +3,16 @@
   "command": "echo",
   "job_spec_path": "null",
   "capacity_requirements": {
+    "env": [
+      {
+        "name": "NODE_NAME",
+        "valueFrom": {
+          "fieldRef": {
+            "fieldPath": "spec.nodeName"
+          }
+        }
+      }
+    ],
     "active_deadline_seconds": 864000,
     "affinity": {
       "podAffinity": {
