@@ -360,7 +360,14 @@ This demo allows running arbitrary Isaac Sim scripts on Omniverse Farm by downlo
 
 ### Setting Nucleus Credentials
 
-If your Nucleus server have a non-default username and password. Use `./omnicli auth [username] [password]` to enter your credentials for uploading files. Alternatively, you can execute the `./omnicli copy ...` command in a Desktop environment, and use the pop up web browser to perform authentication through a GUI. In addition, use the `isaac-sim-nucleus-example.json` job definition instead to include your username and password. The job definition assumes `nucleus-secret` has been added to the K8s secrets by the admin, including `OMNI_USER` and `OMNI_PASS`. Alternatively, if security is not a concern, you may include the username and password directly through the `env` entry in the job definitions.
+If your Nucleus server have a non-default username and password, export the credentials with:
+
+```sh
+export OMNI_USER=<USERNAME>
+export OMNI_PASS=<PASSWORD>
+```
+
+Alternatively, you can execute the `./omnicli copy ...` command in a Desktop environment, and use the pop up web browser (`http://${NUCLEUS_HOSTNAME}:3180`) to perform authentication through a GUI. In addition, use the `isaac-sim-nucleus-example.json` job definition instead to include your username and password. The job definition assumes `nucleus-secret` has been added to the K8s secrets by the admin, including `OMNI_USER` and `OMNI_PASS`. Alternatively, if security is not a concern, you may include the username and password directly through the `env` entry in the job definitions.
 
 Use [`omnicli`](https://docs.omniverse.nvidia.com/connect/latest/connect-sample.html#omni-cli) to upload the script to Nucleus:
 
@@ -465,7 +472,7 @@ Now that you have learned all the basics and successfully run Isaac Sim tasks, y
    docker build -t j3soon/omni-farm-isaac-general -f Dockerfile_general .
    docker push j3soon/omni-farm-isaac-general
    ```
-   In this example, dependencies are not installed in the Dockerfile. However, in practice, you will want to select a suitable base image and pre-install all dependencies in the Dockerfile such as `pip install -r requirements.txt` to prevent the need of installing dependencies every time after launching a container. You may also want to delete the `.dockerignore` file. In addition, ensure that you always copy the `run.sh` file and the `omnicli` directory directly to the root directory (`/`) without any modifications, rather than placing them in other subdirectories. Failing to do so will result in errors, as the script relies on absolute paths. As a side note, if your code will not be modified, you can also directly copy the code to your Docker image. However, this is usually not the case, as you often want to update your code without rebuilding the Docker image.
+   In this example, dependencies are not installed in the Dockerfile. However, in practice, you will want to select a suitable base image and pre-install all dependencies in the Dockerfile such as `pip install -r requirements.txt` to prevent the need of installing dependencies every time after launching a container. You may also want to delete the `.dockerignore` file. In addition, ensure that you always copy the `run.sh` file and the `omnicli` directory directly to the root directory (`/`) without any modifications, rather than placing them in other subdirectories. Failing to do so will result in errors, as the script relies on absolute paths. As a side note, if your code will not be modified (or the Nucleus server connection is unstable), you can also directly copy the code to your Docker image. However, this is usually not the case, as you often want to update your code without rebuilding the Docker image.
 3. Upload your dataset and code to Nucleus server.
    ```
    cd thirdparty/omnicli
@@ -668,17 +675,25 @@ Task Logs:
   Error: Connection
   ```
   This may be due to incorrect Nucleus credentials or incorrect Nucleus server URL. Try launching a `sleep infinity` task and exec into the pod to debug the issue:
-  ```sh
-  kubectl exec -it -n ov-farm <POD_ID> -- /bin/bash
-  # in the container
-  env | grep OMNI
-  # check that `OMNI_USER` and `OMNI_PASS` are set correctly
-  apt-get update && apt-get install -y iputils-ping
-  ping <NUCLEUS_HOSTNAME>
-  # check that the Nucleus server is reachable
-  # in addition, you can also run `omnicli` commands to confirm the issue.
-  # If you want to execute `run.sh` script, consider running something like `bash -c /run.sh`.
-  ```
+  - on local node:
+    ```sh
+    scripts/submit_task.sh isaac-sim-volume-example \
+    "/run.sh \
+      'sleep infinity'" \
+      "Sleep Infinity"
+    ```
+  - on K8s node:
+    ```sh
+    kubectl exec -it -n ov-farm <POD_ID> -- /bin/bash
+    # in the container
+    env | grep OMNI
+    # check that `OMNI_USER` and `OMNI_PASS` are set correctly
+    apt-get update && apt-get install -y iputils-ping
+    ping <NUCLEUS_HOSTNAME>
+    # check that the Nucleus server is reachable
+    # in addition, you can also run `omnicli` commands to confirm the issue.
+    # If you want to execute `run.sh` script, consider running something like `bash -c /run.sh`.
+    ```
 - If a task encounters OOM (Out of Memory) issues, it may crash the node, resulting in no errors in the log outputs.
 
 ## Acknowledgements
