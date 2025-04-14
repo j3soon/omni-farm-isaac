@@ -1,6 +1,6 @@
 # Running Isaac Sim Workloads on Omniverse Farm
 
-These scripts are only tested on Linux environment (Ubuntu). If you are using MacOS or Windows, consider using Virtual Box to setup a Ubuntu virtual machine. WSL2 may work but hasn't been tested. Please note that these scripts only support x86 architecture, and will not work on ARM architecture.
+These scripts are tested on Linux environment (Ubuntu) and [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) on Windows. If you are using MacOS, consider using Virtual Box to setup a Ubuntu virtual machine. Please note that these scripts only support x86 architecture, and will not work on ARM architecture.
 
 ## Support Matrix
 
@@ -180,6 +180,9 @@ export FARM_API_KEY="s3cr3t"
 export FARM_URL="http://localhost:8222"
 export FARM_USER="j3soon"
 export NUCLEUS_HOSTNAME="localhost"
+# Below are optional, only needed if you are using non-default username and password for Nucleus.
+# export OMNI_USER="admin"
+# export OMNI_PASS="admin"
 ```
 
 Then, for each shell session, make sure to source the environment variables by running the following command in the root directory of this repository:
@@ -197,6 +200,8 @@ All following commands assume you are in the root directory of this repository (
 > Skip this section if accessing your Omniverse Farm doesn't require a VPN.
 
 There doesn't seem to be a way to use the OpenVPN Connect v3 GUI on Linux as in [Windows](https://openvpn.net/client/client-connect-vpn-for-windows/) or [MacOS](https://openvpn.net/client-connect-vpn-for-mac-os/). Instead, use the command line to install OpenVPN 3 Client by following [the official guide](https://openvpn.net/cloud-docs/owner/connectors/connector-user-guides/openvpn-3-client-for-linux.html).
+
+> If you are using WSL2, use the OpenVPN Connect v3 GUI on your Windows host to connect to the VPN. The following steps aren't required and will not work if you try to run them in WSL2.
 
 Then, copy your `.ovpn` client config file to `secrets/client.ovpn` and install the config, and connect to the VPN with:
 
