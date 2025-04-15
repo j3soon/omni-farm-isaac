@@ -8,6 +8,8 @@ show_help() {
     echo "Environment variables required:"
     echo "  FARM_URL:          Omniverse Farm URL"
     echo "  FARM_API_KEY:      Omniverse Farm API Key"
+    echo "  NUCLEUS_IP:        Nucleus IP address"
+    echo "  NUCLEUS_HOSTNAME:  Nucleus hostname"
 }
 
 check_environment_variable() {
@@ -21,6 +23,8 @@ check_environment_variable() {
 
 check_environment_variable "FARM_URL"
 check_environment_variable "FARM_API_KEY"
+check_environment_variable "NUCLEUS_IP"
+check_environment_variable "NUCLEUS_HOSTNAME"
 
 if [ "$#" -ne 1 ]; then
     echo "Error: Incorrect number of arguments. Expected 1, got $#."
@@ -30,7 +34,15 @@ fi
 
 # Using an undocumented API endpoint
 echo "Parsing job definition..."
-json_content=$(jq --arg name "$1" '. + {name: $name}' "job_definitions/$1.json")
+json_content=$(jq --arg name "$1" --arg ip "$NUCLEUS_IP" --arg hostname "$NUCLEUS_HOSTNAME" '
+  .name = $name |
+  .capacity_requirements.hostAliases = [
+    {
+      ip: $ip,
+      hostnames: [$hostname]
+    }
+  ]
+' "job_definitions/$1.json")
 echo "Trying to remove job definition in case of job definition update..."
 curl -X "POST" "${FARM_URL}/queue/management/jobs/remove" \
     -H "Accept: application/json" \

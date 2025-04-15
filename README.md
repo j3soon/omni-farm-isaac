@@ -179,6 +179,7 @@ Fill in the Omniverse Farm server information in `secrets/env.sh`, for example:
 export FARM_API_KEY="s3cr3t"
 export FARM_URL="http://localhost:8222"
 export FARM_USER="j3soon"
+export NUCLEUS_IP="127.0.0.1"
 export NUCLEUS_HOSTNAME="localhost"
 # Below are optional, only needed if you are using non-default username and password for Nucleus.
 # export OMNI_USER="admin"
