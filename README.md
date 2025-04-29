@@ -184,7 +184,11 @@ export NUCLEUS_HOSTNAME="localhost"
 # Below are optional, only needed if you are using non-default username and password for Nucleus.
 # export OMNI_USER="admin"
 # export OMNI_PASS="admin"
+# export FTP_USER="j3soon"
+# export FTP_PASS="s3cr3t"
 ```
+
+> If you don't know what to fill in here. Double check the `README` file and example `env.sh` file provided by the cluster admin. Make sure to update your `FARM_USER` to your own username.
 
 Then, for each shell session, make sure to source the environment variables by running the following command in the root directory of this repository:
 
@@ -601,6 +605,37 @@ For headless tasks, simply follow [the official guide](https://docs.omniverse.nv
 If your task requires a GUI during development, see [this guide](https://github.com/j3soon/isaac-extended#docker-container-with-display).
 
 Refer to [scripts/docker](scripts/docker) for potential useful scripts for running Isaac Sim tasks locally.
+
+## Additional Features
+
+### Download Task Logs
+
+Follow the instructions [here](https://docs.omniverse.nvidia.com/farm/latest/guides/testing_farm.html#check-the-task-s-log-s):
+
+```sh
+curl -X GET ${FARM_URL}/queue/management/logs/<TASK_ID> -H "accept: application/json"
+```
+
+### FTP
+
+If the cluster admin has enabled FTP, you can use [FileZilla](https://filezilla-project.org/download.php?show_all=1) or `lftp` to download the task logs.
+
+> Note that some FileZilla installer [may contain adware](https://www.reddit.com/r/sysadmin/comments/mdg1rq/comment/gs9dc9v). Make sure the name of the installer does not container the word `sponsored`.
+
+For FileZilla, enter the Host `${NUCLEUS_IP}` in `env.sh` and enter the Username and Password provided by the cluster admin.
+
+For `lftp`, enter the following command:
+
+```sh
+sudo apt-get update && sudo apt-get install -y lftp
+echo "set ssl:verify-certificate no" >> ~/.lftprc
+lftp -u ${FTP_USER},${FTP_PASS} ${NUCLEUS_IP}
+cd /mnt/nfs
+ls
+# Use `get` and `put` to download and upload files.
+```
+
+For more `lftp` commands, see [the official documentation](https://manpages.debian.org/stretch/lftp/lftp.1.en.html) or a simple cheat sheet [here](https://github.com/mcandre/cheatsheets/blob/master/lftp.md).
 
 ## FAQ
 
