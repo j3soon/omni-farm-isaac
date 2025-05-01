@@ -622,7 +622,7 @@ If the cluster admin has enabled FTP, you can use [FileZilla](https://filezilla-
 
 > Note that some FileZilla installer [may contain adware](https://www.reddit.com/r/sysadmin/comments/mdg1rq/comment/gs9dc9v). Make sure the name of the installer does not container the word `sponsored`.
 
-For FileZilla, enter the Host `${NUCLEUS_IP}` in `env.sh` and enter the Username and Password provided by the cluster admin.
+For FileZilla, enter the Host `${NUCLEUS_IP}` in `env.sh` and enter the Username and Password provided by the cluster admin. Also make sure to set `Edit > Settings > Transfers > File Types > Default transfer type > Binary` to prevent the endlines from being changed, see [this post](https://stackoverflow.com/a/555003) for more details.
 
 For `lftp`, enter the following command:
 
