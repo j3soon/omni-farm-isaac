@@ -587,7 +587,7 @@ scripts/submit_task.sh isaac-lab-volume-example \
   '. /opt/conda/etc/profile.d/conda.sh' \
   'conda activate env_isaaclab' \
   './isaaclab.sh -p scripts/reinforcement_learning/rl_games/train.py --task=Isaac-Cartpole-v0 --headless'" \
-  "Isaac Lab RL-Games Isaac-Ant-v0"
+  "Isaac Lab RL-Games Isaac-Cartpole-v0"
 ```
 
 > Optionally, you can remove the job definition file after the job has finished:
