@@ -1,5 +1,7 @@
 # Running Isaac Sim Workloads on Omniverse Farm
 
+> For running Isaac Sim workloads on Run:ai, please refer to [j3soon/runai-isaac](https://github.com/j3soon/runai-isaac). These two workload managers can be used together.
+
 These scripts are tested on Linux environment (Ubuntu) and [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) on Windows. If you are using MacOS, consider using Virtual Box to setup a Ubuntu virtual machine. Please note that these scripts only support x86 architecture, and will not work on ARM architecture.
 
 ## Support Matrix
