@@ -673,6 +673,7 @@ Task States:
 - In some workloads, the task will sometimes keep running but show as the `errored` state. In this case, there will be no error logs, please contact the cluster admin to confirm the status of this workload.
 - If your task gets stuck in the `cancelling` state or appears to be running despite being in the `cancelled` state, please contact the cluster admin for killing the task for you.
 - You can confirm the task is actually _running_ only when you see the log outputs (aside from the `No logs found` message).
+- In the case where all new submitted tasks fails into the `errored` state, it may be due to some user submitted a malformed job definition file. Please contact the cluster admin for assistance, and potentially remove that particular job definition file.
 
 Task Logs:
 - When using `tar` on a mounted volume, make sure to use the `--no-same-owner` flag to prevent the following error:
